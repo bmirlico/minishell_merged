@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_error_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/13 16:19:04 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/03 15:05:14 by clbernar         ###   ########.fr       */
+/*   Updated: 2023/07/24 21:26:36 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ int	check_bad_env_variable(char *input)
 	{
 		if (input[i] == '$' && input[i + 1] == '{' && input[i + 2] == '}')
 			return (2);
-		else if (input[i] == '$' && input[i + 1] == '{')
+		else if ((input[i] == '$' && input[i + 1] == '{')
+			&& (ft_isalnum(input[i + 2]) || input[i + 2] == '?'))
 		{
 			var_env = SINGLE_OPEN;
 			i++;

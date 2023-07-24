@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 14:49:29 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/20 13:55:52 by clbernar         ###   ########.fr       */
+/*   Updated: 2023/07/24 22:24:44 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,46 @@ void	if_file_exists(char *cmd_p, t_command *tmp, t_pipex vars)
 		free_and_exit(vars);
 		exit(EXIT_FAILURE);
 	}
+}
+
+void	check_bad_subst_cmd(t_command *tmp, t_pipex vars, t_token **rdirs)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	str = NULL;
+	if (tmp->cmd_args == NULL)
+		return ;
+	while (tmp->cmd_args[i] != NULL)
+	{
+		//printf("%d\n", check_bad_env_variable(tmp->cmd_args[i]));
+		if (check_bad_env_variable(tmp->cmd_args[i]) == 2)
+		{
+			str = ft_strjoin(tmp->cmd_args[i], ": bad substitution\n");
+			ft_putstr_fd(str, 2);
+			free(str);
+			close_rdirs(rdirs, tmp);
+			if (vars.nb_pipes > 0)
+				close_previous_pipe(vars, tmp->index);
+			close_pipe_and_free(vars, tmp->index);
+		}
+		i++;
+	}
+}
+
+int	is_bad_subst_cmd(t_command *tmp)
+{
+	int	i;
+
+	i = 0;
+	if (tmp->cmd_args == NULL)
+		return (0);
+	while (tmp->cmd_args[i] != NULL)
+	{
+		if (check_bad_env_variable(tmp->cmd_args[i]) == 2)
+			return (1);
+		i++;
+	}
+	return (0);
 }

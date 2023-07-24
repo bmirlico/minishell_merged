@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/21 19:26:28 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/24 22:21:24 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,15 @@ void	execution(t_pipex vars)
 	char		*cmd;
 
 	tmp = *(vars.copy_cmds);
-	cmd = (*(vars.copy_cmds))->cmd_args[0];
+	if (tmp->cmd_args != NULL)
+		cmd = (*(vars.copy_cmds))->cmd_args[0];
+	else
+		cmd = NULL;
 	init_struct(&vars);
 	while (tmp != NULL)
 	{
-		open_rdirs(&(tmp->redirections));
+		if (!is_bad_subst_cmd(tmp))
+			open_rdirs(&(tmp->redirections));
 		if (tmp->cmd_args != NULL && vars.nb_pipes == 0
 			&& is_builtin(tmp->cmd_args[0]))
 			exec_builtin(tmp, vars);
@@ -50,22 +54,23 @@ void	pipex(t_command *tmp, t_pipex vars, t_token **rdirs)
 	else if (vars.tab_pid[tmp->index] > 0)
 	{
 		close_previous_pipe(vars, tmp->index);
-		close_rdirs(&(tmp->redirections));
+		close_rdirs(&(tmp->redirections), tmp);
 	}
 }
 
 // fonction qui gere le process child, i.e. redirige les fd et execute la cmd
 void	child_process(t_command *tmp, t_pipex vars, t_token **rdirs)
 {
+	check_bad_subst_cmd(tmp, vars, rdirs);
 	handle_errors_rdirs(tmp, vars, rdirs);
 	if (tmp->cmd_args != NULL)
-		pipe_redirection(vars, rdirs, tmp->index);
-	if (tmp->cmd_args == NULL)
+		pipe_redirection(vars, tmp);
+	if (get_len_tab(tmp->cmd_args) == 0)
 	{
 		close_previous_pipe(vars, tmp->index);
 		if (tmp->index < vars.nb_pipes)
 			close_pipe(vars, tmp->index);
-		close_rdirs(rdirs);
+		close_rdirs(rdirs, tmp);
 		free_and_exit(vars);
 		exit(EXIT_SUCCESS);
 	}

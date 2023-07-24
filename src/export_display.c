@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   export_display.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 14:16:20 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/18 13:47:30 by clbernar         ###   ########.fr       */
+/*   Updated: 2023/07/24 16:31:02 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 // Displays the env when export command has no arguments
-void	display_export(t_env *env)
+void	display_export(t_env *env, t_pipex vars)
 {
 	t_env	*tmp;
 
@@ -24,24 +24,34 @@ void	display_export(t_env *env)
 		tmp = tmp->next;
 	}
 	new_return_value(env, "0");
+	if (vars.nb_pipes > 0)
+	{
+		free_and_exit(vars);
+		exit(EXIT_SUCCESS);
+	}
 }
 
 // Displays an error_message due to the varenv name
-void	display_not_a_valid_identifier(char *str, t_env *env)
+void	display_not_a_valid_identifier(char *str, t_pipex vars)
 {
 	char	*tmp1;
 	char	*tmp2;
 
 	tmp1 = NULL;
 	tmp2 = NULL;
-	tmp1 = ft_strjoin("export : ", str);
-	tmp2 = ft_strjoin(tmp1, " : not a valid identifier\n");
+	tmp1 = ft_strjoin("export: ", str);
+	tmp2 = ft_strjoin(tmp1, ": not a valid identifier\n");
 	ft_putstr_fd(tmp2, 2);
 	if (tmp1 != NULL)
 		free(tmp1);
 	if (tmp2 != NULL)
 		free(tmp2);
-	new_return_value(env, "1");
+	new_return_value(vars.copy_t_env, "1");
+	if (vars.nb_pipes > 0)
+	{
+		free_and_exit(vars);
+		exit(EXIT_FAILURE);
+	}
 }
 
 // This function checks if the var_env that is about to be export

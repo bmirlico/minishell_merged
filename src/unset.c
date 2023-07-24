@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset_builtin.c                                    :+:      :+:    :+:   */
+/*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 15:47:26 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/10 17:47:17 by clbernar         ###   ########.fr       */
+/*   Updated: 2023/07/24 17:01:56 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,24 @@ void	delete_first(t_env *env)
 	free(tmp);
 }
 
-void	built_in_unset(t_command *cmd, t_env *env)
+void	built_in_unset(t_command *cmd, t_pipex vars)
 {
 	int		i;
 
-	// Gestion des rdirs en cas de unset seul
 	i = 1;
 	if (get_len_tab(cmd->cmd_args) > 1)
 	{
 		while (cmd->cmd_args[i] != NULL)
 		{
 			if (ft_strncmp(cmd->cmd_args[i], "?", ft_strlen("?") + 1) != 0)
-				unset(env, cmd->cmd_args[i]);
+				unset(vars.copy_t_env, cmd->cmd_args[i]);
 			i++;
 		}
 	}
-	new_return_value(env, "0");
+	new_return_value(vars.copy_t_env, "0");
+	if (vars.nb_pipes > 0)
+	{
+		free_and_exit(vars);
+		exit(EXIT_SUCCESS);
+	}
 }

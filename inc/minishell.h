@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/21 20:40:38 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/24 22:21:17 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,6 +328,11 @@ void			if_file_unexists(char *cmd_p, t_command *tmp, t_pipex vars);
 
 void			if_file_exists(char *cmd_p, t_command *tmp, t_pipex vars);
 
+void			check_bad_subst_cmd(t_command *tmp, t_pipex vars,
+					t_token **rdirs);
+
+int				is_bad_subst_cmd(t_command *tmp);
+
 // pipe_.c @Bastien
 
 pid_t			**init_pipefd(int nb_pipes);
@@ -342,13 +347,13 @@ void			free_pipefd(pid_t **pipefd, int nb_pipes);
 
 // pipe_rdirs_1.c @Bastien
 
-void			pipe_redirection(t_pipex vars, t_token **rdirs, int i);
+void			pipe_redirection(t_pipex vars, t_command *tmp);
 
-void			pipe_first(t_pipex vars, int i, t_token **rdirs);
+void			pipe_first(t_pipex vars, int i, t_command *tmp);
 
-void			pipe_last(t_pipex vars, int i, t_token **rdirs);
+void			pipe_last(t_pipex vars, int i, t_command *tmp);
 
-void			pipe_between(t_pipex vars, int i, t_token **rdirs);
+void			pipe_between(t_pipex vars, int i, t_command *tmp);
 
 void			pipe_between_infile(t_token *last_infile, t_pipex vars,
 					int i);
@@ -374,7 +379,7 @@ void			handle_errors_rdirs(t_command *tmpc, t_pipex vars,
 
 void			close_pipe_and_free(t_pipex vars, int index);
 
-void			close_rdirs(t_token **redirections);
+void			close_rdirs(t_token **redirections, t_command *tmp);
 
 void			fill_heredoc(t_token *tmp);
 
@@ -419,7 +424,7 @@ int				is_builtin(char *cmd);
 
 void			exec_builtin(t_command *tmp, t_pipex vars);
 
-void			builtin_redirection(int *old_stdout, t_command *tmp,
+int				builtin_redirection(int *old_stdout, t_command *tmp,
 					t_pipex vars);
 
 int				errors_rdirs_builtin_alone(t_command *tmp, t_pipex vars);
@@ -428,18 +433,18 @@ void			builtins(int len, t_command *tmp, t_pipex vars);
 
 // cd.c @Bastien
 
-void			built_in_cd(t_command *tmp);
+void			built_in_cd(t_command *tmp, t_pipex vars);
 
 // pwd.c @Bastien
 
-void			built_in_pwd(void);
+void			built_in_pwd(t_pipex vars);
 
 // exit_1.c @Bastien
 
-void			built_in_exit(t_command *tmp);
+void			built_in_exit(t_command *tmp, t_pipex vars);
 
 void			conditions_exit(t_command *tmp, long long exit_code,
-					char *error_str, int len_tab);
+					int len_tab, t_pipex vars);
 
 int				is_numeric(char *str);
 
@@ -463,7 +468,7 @@ void			built_in_env(t_command *tmp, t_pipex vars);
 
 // unset.c @Clement
 
-void			built_in_unset(t_command *cmd, t_env *env);
+void			built_in_unset(t_command *cmd, t_pipex vars);
 
 void			unset(t_env *env, char *name);
 
@@ -471,27 +476,27 @@ void			delete_first(t_env *env);
 
 // export.c @Clement
 
-void			built_in_export(t_command *cmd, t_env *env);
+void			built_in_export(t_command *cmd, t_pipex vars);
 
 int				affectation_is_complete(char *str);
 
 void			export(t_env *env, char *declaration);
 
-int				check_valid_identifier(t_env *env, char *str);
+int				check_valid_identifier(t_pipex vars, char *str);
 
 void			swap_value(t_env *env, char *declaration);
 
 // export_display.c @Clement
 
-void			display_export(t_env *env);
+void			display_export(t_env *env, t_pipex vars);
 
-void			display_not_a_valid_identifier(char *str, t_env *env);
+void			display_not_a_valid_identifier(char *str, t_pipex vars);
 
 int				already_exist(t_env *env, char *declaration);
 
 // echo.c @Clement
 
-void			built_in_echo(t_command *cmd, t_env *env);
+void			built_in_echo(t_command *cmd, t_pipex vars);
 
 void			echo(t_command *cmd, t_env *env);
 

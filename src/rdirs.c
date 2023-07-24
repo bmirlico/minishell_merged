@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:42:19 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/21 17:56:06 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/24 22:40:27 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ void	open_rdirs(t_token **redirections)
 	tmp = *redirections;
 	while (tmp != NULL)
 	{
+		if ((tmp->type == T_INFILE || tmp->type == T_OUTFILE
+				|| tmp->type == T_OUTFILE_APPEND)
+			&& (check_bad_env_variable(tmp->str) == 2 || tmp->str[0] == '\0'
+				|| !ft_strncmp(tmp->str, "\"\"", 3)))
+		{
+			tmp->fd = -2;
+			return ;
+		}
 		if (tmp->type == T_INFILE)
 			tmp->fd = open(tmp->str, O_RDONLY, S_IRUSR);
 		else if (tmp->type == T_OUTFILE)
@@ -43,22 +51,48 @@ void	open_rdirs(t_token **redirections)
 void	handle_errors_rdirs(t_command *tmpc, t_pipex vars, t_token **rdirs)
 {
 	t_token	*tmp;
+	char	*error;
 
 	tmp = *rdirs;
+	error = NULL;
 	while (tmp != NULL)
 	{
 		if ((tmp->type == T_INFILE || tmp->type == T_LIMITOR)
-			&& ((tmp->fd < 0 && access(tmp->str, F_OK) == -1) || (tmp->fd < 0)))
+			&& ((tmp->fd < 0 && access(tmp->str, F_OK) == -1) || (tmp->fd < 0)) )
 		{
-			perror(tmp->str);
-			close_rdirs(rdirs);
+			if (check_bad_env_variable(tmp->str) == 2)
+			{
+				error = ft_strjoin(tmp->str, ": bad substitution\n");
+				ft_putstr_fd(error, 2);
+				free(error);
+			}
+			else if (tmp->str[0] == '\0')
+				ft_putstr_fd("Ambiguous redirect\n", 2);
+			else if (!ft_strncmp(tmp->str, "\"\"", 3))
+				ft_putstr_fd(" : No such file or directory\n", 2);
+			else
+				perror(tmp->str);
+			close_rdirs(rdirs, tmpc);
+			if (vars.nb_pipes > 0)
+				close_previous_pipe(vars, tmpc->index);
 			close_pipe_and_free(vars, tmpc->index);
 		}
 		else if ((tmp->type == T_OUTFILE || tmp->type == T_OUTFILE_APPEND)
 			&& tmp->fd < 0)
 		{
-			perror(tmp->str);
-			close_rdirs(rdirs);
+			if (check_bad_env_variable(tmp->str) == 2)
+			{
+				error = ft_strjoin(tmp->str, ": bad substitution\n");
+				ft_putstr_fd(error, 2);
+				free(error);
+			}
+			else if (tmp->str[0] == '\0')
+				ft_putstr_fd("Ambiguous redirect\n", 2);
+			else if (!ft_strncmp(tmp->str, "\"\"", 3))
+				ft_putstr_fd(" : No such file or directory\n", 2);
+			else
+				perror(tmp->str);
+			close_rdirs(rdirs, tmpc);
 			if (vars.nb_pipes > 0)
 				close_previous_pipe(vars, tmpc->index);
 			close_pipe_and_free(vars, tmpc->index);
@@ -79,20 +113,24 @@ void	close_pipe_and_free(t_pipex vars, int index)
 }
 
 // fonction qui ferme les redirections
-void	close_rdirs(t_token **redirections)
+void	close_rdirs(t_token **redirections, t_command *tmp)
 {
-	t_token	*tmp;
+	t_token	*temp;
 
-	tmp = *redirections;
-	while (tmp != NULL)
+	temp = *redirections;
+	if (is_bad_subst_cmd(tmp))
+		return ;
+	while (temp != NULL)
 	{
-		if (tmp->type == T_INFILE || tmp->type == T_OUTFILE
-			|| tmp->type == T_OUTFILE_APPEND || tmp->type == T_LIMITOR)
+		if (temp->type == T_INFILE || temp->type == T_OUTFILE
+			|| temp->type == T_OUTFILE_APPEND || temp->type == T_LIMITOR)
 		{
-			if (tmp->fd >= 0)
-				close(tmp->fd);
+			if (check_bad_env_variable(temp->str) == 2 || temp->str[0] == '\0')
+				return ;
+			if (temp->fd >= 0)
+				close(temp->fd);
 		}
-		tmp = tmp->next;
+		temp = temp->next;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/21 14:56:27 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/24 22:29:02 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	minishell(t_env *env, char *input)
 		lexer_str(&lst, &lst_j);
 		parser(&lst_j, &cmds);
 		expand(env, &cmds);
-		//display_parser(&cmds);
+		display_parser(&cmds);
 		vars.copy_t_env = env;
 		vars.copy_env_tmp = create_env_tab(env);
 		copy_lists(&vars, &lst, &lst_j, &cmds);

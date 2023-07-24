@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 20:01:19 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/21 14:54:38 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/24 21:50:12 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	expand_str_tab(t_env *env, char **tab, int i)
 	var_env_len = get_varenv_value_len(env, tab[i]);
 	new_len = ft_strlen(tab[i]) - get_varname_len(tab[i]) + var_env_len;
 	new = NULL;
-	new = malloc(sizeof(char) * (new_len + 1));
+	new = ft_calloc(sizeof(char), (new_len + 1));
 	if (new == NULL)
 		return ;
 	new[new_len] = '\0';
@@ -64,7 +64,7 @@ void	expand_rdir_lst(t_env *env, t_token *rdir)
 	var_env_len = get_varenv_value_len(env, rdir->str);
 	new_len = ft_strlen(rdir->str) - get_varname_len(rdir->str) + var_env_len;
 	new = NULL;
-	new = malloc(sizeof(char *) * (new_len + 1));
+	new = ft_calloc(sizeof(char), (new_len + 1));
 	if (new == NULL)
 		return ;
 	new[new_len] = '\0';

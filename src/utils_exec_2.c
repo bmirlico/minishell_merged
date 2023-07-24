@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 15:06:14 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/18 18:02:54 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:34:16 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ char	*get_cmd_with_path(char *cmd, char **paths)
 	char	*cmd_with_path;
 
 	i = 0;
+	if (cmd == NULL)
+		return (NULL);
 	while (paths[i] != NULL)
 	{
 		cmd_with_path = ft_strjoin3(paths[i], "/", cmd);

@@ -1,54 +1,67 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_2.c                                           :+:      :+:    :+:   */
+/*   exit_1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 14:05:01 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/03 16:10:11 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/24 15:44:39 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 // Commande builtin EXIT
-void	built_in_exit(t_command *tmp)
+void	built_in_exit(t_command *tmp, t_pipex vars)
 {
 	int			len_tab;
 	long long	exit_code;
-	char		*error_str;
 
 	len_tab = get_len_tab(tmp->cmd_args);
 	exit_code = ft_strtoll(tmp->cmd_args[1]);
-	error_str = NULL;
-	ft_printf("exit\n");
-	conditions_exit(tmp, exit_code, error_str, len_tab);
+	if (vars.nb_pipes == 0)
+		ft_putstr_fd("exit\n", 2);
+	conditions_exit(tmp, exit_code, len_tab, vars);
 }
 
 // fonction qui regroupe tous les cas d'exit à gérer
 // faite pour passer la norminette
-void	conditions_exit(t_command *tmp, long long exit_code, char *error_str,
-		int len_tab)
+void	conditions_exit(t_command *tmp, long long exit_code, int len_tab,
+			t_pipex vars)
 {
+	char	*error_str;
+
+	error_str = NULL;
 	if (len_tab == 1)
-		exit(0);
+	{
+		free_and_exit(vars);
+		exit(EXIT_SUCCESS);
+	}
 	else if (is_out_of_range(exit_code, tmp->cmd_args[1])
 		|| is_numeric(tmp->cmd_args[1]) == 0)
 	{
 		exit_non_numeric(&error_str, tmp->cmd_args[1]);
 		ft_putstr_fd(error_str, 2);
+		free(error_str);
+		free_and_exit(vars);
 		exit(2);
 	}
 	else if (len_tab > 2)
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
-		errno = 1;
+		new_return_value(vars.copy_t_env, "1");
+		if (vars.nb_pipes > 0)
+		{
+			free_and_exit(vars);
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
 		if (!(exit_code >= 0 && exit_code <= 255))
 			exit_code %= 256;
+		free_and_exit(vars);
 		exit(exit_code);
 	}
 }

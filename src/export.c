@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_builtin.c                                   :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:16:33 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/18 17:17:57 by clbernar         ###   ########.fr       */
+/*   Updated: 2023/07/24 16:44:13 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	export(t_env *env, char *declaration)
 
 // This function checks if the name of the new var_env is valid
 // and display an error message if not
-int	check_valid_identifier(t_env *env, char *str)
+int	check_valid_identifier(t_pipex vars, char *str)
 {
 	int		i;
 	int		affectation;
@@ -99,7 +99,7 @@ int	check_valid_identifier(t_env *env, char *str)
 			|| (i != 0 && (ft_isalnum(str[i]) == 0
 					&& str[i] != '_' && affectation == 0)))
 		{
-			display_not_a_valid_identifier(str, env);
+			display_not_a_valid_identifier(str, vars);
 			return (0);
 		}
 		i++;
@@ -109,21 +109,25 @@ int	check_valid_identifier(t_env *env, char *str)
 
 // Displays the env if no args, and checks if the varenv name
 // that is about to be export is valid
-void	built_in_export(t_command *cmd, t_env *env)
+void	built_in_export(t_command *cmd, t_pipex vars)
 {
 	int	i;
 
 	i = 1;
-	// Gestion des rdirs en cas de unset seul
 	if (get_len_tab(cmd->cmd_args) == 1)
-		display_export(env);
+		display_export(vars.copy_t_env, vars);
 	else
 	{
 		while (cmd->cmd_args[i] != NULL)
 		{
-			if (check_valid_identifier(env, cmd->cmd_args[i]) == 1)
-				export(env, cmd->cmd_args[i]);
+			if (check_valid_identifier(vars, cmd->cmd_args[i]) == 1)
+				export(vars.copy_t_env, cmd->cmd_args[i]);
 			i++;
+		}
+		if (vars.nb_pipes > 0)
+		{
+			free_and_exit(vars);
+			exit(EXIT_SUCCESS);
 		}
 	}
 }
