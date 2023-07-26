@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 22:21:24 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/26 18:20:54 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void	execution(t_pipex vars)
 	while (tmp != NULL)
 	{
 		if (!is_bad_subst_cmd(tmp))
-			open_rdirs(&(tmp->redirections));
+			open_rdirs(&(tmp->redirections), tmp, vars);
+		// reset_signal(vars);
 		if (tmp->cmd_args != NULL && vars.nb_pipes == 0
 			&& is_builtin(tmp->cmd_args[0]))
 			exec_builtin(tmp, vars);
@@ -61,6 +62,7 @@ void	pipex(t_command *tmp, t_pipex vars, t_token **rdirs)
 // fonction qui gere le process child, i.e. redirige les fd et execute la cmd
 void	child_process(t_command *tmp, t_pipex vars, t_token **rdirs)
 {
+	reset_signal(vars);
 	check_bad_subst_cmd(tmp, vars, rdirs);
 	handle_errors_rdirs(tmp, vars, rdirs);
 	if (tmp->cmd_args != NULL)
@@ -100,7 +102,7 @@ void	wait_exit_code(t_pipex vars)
 			new_return_value(vars.copy_t_env, str_exit);
 			free(str_exit);
 			printf("Exit status: %d\n", exit_code);
-		}
+		} 
 		tmp = tmp->next;
 	}
 }

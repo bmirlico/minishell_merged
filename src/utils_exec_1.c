@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:48:30 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 16:56:04 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/26 15:48:08 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	init_struct(t_pipex *vars)
 	vars->tab_pid = malloc(sizeof(pid_t) * vars->nb_cmds);
 	if (!vars->tab_pid)
 		return ;
+	tcgetattr(0, &(vars->original_attributes));
 }
 
 // fonction qui index les éléments de la liste chainée t_command

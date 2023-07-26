@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+         #
+#    By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/27 18:44:26 by bmirlico          #+#    #+#              #
-#    Updated: 2023/07/20 14:00:36 by clbernar         ###   ########.fr        #
+#    Updated: 2023/07/26 14:40:35 by bmirlico         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,9 @@ SRCS = 			$(SRC_DIR)/main.c \
 				$(SRC_DIR)/export.c \
 				$(SRC_DIR)/export_display.c \
 				$(SRC_DIR)/echo.c \
-				$(SRC_DIR)/echo_special_case.c
+				$(SRC_DIR)/echo_special_case.c \
+				$(SRC_DIR)/signal.c \
+				$(SRC_DIR)/reset_signal.c
 
 LIBFTDIR = 		./libft
 

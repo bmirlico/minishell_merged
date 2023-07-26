@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 22:21:17 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/26 15:47:55 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,17 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
+# include <signal.h>
+# include <termios.h>
 
 # define DELIMITER " "
 # define SPECIAL_CHAR "#&~*`();\\"
 # define SINGLE_OPEN 1
 # define DOUBLE_OPEN 2
 # define CLOSED 3
+
+// variable globale pour la gestion des exit codes des signaux
+extern int	g_sig;
 
 // tokens de l'input
 typedef enum s_token_type {
@@ -85,6 +90,7 @@ typedef struct s_pipex {
 	t_token					**copy_lst;
 	t_token					**copy_lst_j;
 	t_command				**copy_cmds;
+	struct termios			original_attributes;
 }	t_pipex;
 
 /* 0) MAIN */
@@ -308,8 +314,6 @@ void			new_return_value(t_env *env, char *return_value);
 
 // exec_1.c @Bastien
 
-// void			execution(char *input, t_command **cmds, char **env,
-// 					t_pipex vars);
 void			execution(t_pipex vars);
 
 void			pipex(t_command *tmp, t_pipex vars, t_token **rdirs);
@@ -372,7 +376,8 @@ t_token			*get_last_outfile(t_token **rdirs);
 
 // rdirs_.c @Bastien
 
-void			open_rdirs(t_token **redirections);
+void			open_rdirs(t_token **redirections, t_command *tmpc,
+					t_pipex vars);
 
 void			handle_errors_rdirs(t_command *tmpc, t_pipex vars,
 					t_token **rdirs);
@@ -381,7 +386,8 @@ void			close_pipe_and_free(t_pipex vars, int index);
 
 void			close_rdirs(t_token **redirections, t_command *tmp);
 
-void			fill_heredoc(t_token *tmp);
+void			fill_heredoc(t_token *tmp, t_command *tmpc,
+					t_pipex vars);
 
 // utils_exec_1.c @Bastien
 
@@ -515,5 +521,25 @@ void			print_varenv_no_space(char *str);
 int				check_var_env(char *var);
 
 int				is_special_var_env(char *str, int i, t_env *env);
+
+/* 6) GESTION des signaux */
+
+// signal.c @Bastien @Clement
+
+void			signal_action(void);
+
+void			signal_sigint(void);
+
+void			signal_ctrlc(int sig);
+
+void			signal_sigquit(void);
+
+// reset_signal.c @Bastien @Clement
+
+void			reset_signal(t_pipex vars);
+
+void			reset_sigint(void);
+
+void			reset_sigquit(t_pipex vars);
 
 #endif

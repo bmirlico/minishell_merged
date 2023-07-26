@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 22:29:02 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/26 17:37:49 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	main(int ac, char **av, char **envp)
 {
 	char		*input;
 	t_env		*env;
+	char		*exit_sig;
 
 	(void)av;
 	env = NULL;
@@ -30,7 +31,18 @@ int	main(int ac, char **av, char **envp)
 	dup_env(envp, &env);
 	while (1)
 	{
+		signal_action();
 		input = readline("minishell$ ");
+		exit_sig = ft_itoa(g_sig);
+		if (g_sig == 130 || g_sig == 131)
+			new_return_value(env, exit_sig);
+		free(exit_sig);
+		if (input == NULL)
+		{
+			ft_printf("exit\n");
+			free_envlst(&env);
+			exit (0);
+		}
 		minishell(env, input);
 		free(input);
 	}
@@ -49,10 +61,10 @@ void	minishell(t_env *env, char *input)
 	lst = create_list_lexer();
 	lst_j = create_list_lexer();
 	cmds = create_list_parser();
+	if (ft_strlen(input) > 0)
+		add_history(input);
 	if (check_syntax(input) == 1)
 	{
-		if (ft_strlen(input) > 0)
-			add_history(input);
 		if (!ft_strncmp(input, "stop", ft_strlen(input) + 1))
 		{
 			free(input);
@@ -63,7 +75,7 @@ void	minishell(t_env *env, char *input)
 		lexer_str(&lst, &lst_j);
 		parser(&lst_j, &cmds);
 		expand(env, &cmds);
-		display_parser(&cmds);
+		//display_parser(&cmds);
 		vars.copy_t_env = env;
 		vars.copy_env_tmp = create_env_tab(env);
 		copy_lists(&vars, &lst, &lst_j, &cmds);

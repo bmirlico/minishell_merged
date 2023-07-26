@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:16:33 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/24 16:44:13 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/25 16:10:22 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,11 @@ int	check_valid_identifier(t_pipex vars, char *str)
 
 	i = 0;
 	affectation = 0;
+	if (str != NULL && str[0] == '\0')
+	{
+		display_not_a_valid_identifier(str, vars);
+		return (0);
+	}
 	while (str[i] != '\0')
 	{
 		if (str[i] == '=')

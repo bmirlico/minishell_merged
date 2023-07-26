@@ -6,14 +6,14 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:42:19 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 22:40:27 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/26 15:18:49 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 // fonction qui ouvre les redirections s'il y en a
-void	open_rdirs(t_token **redirections)
+void	open_rdirs(t_token **redirections, t_command *tmpc, t_pipex vars)
 {
 	t_token	*tmp;
 
@@ -40,7 +40,7 @@ void	open_rdirs(t_token **redirections)
 		{
 			tmp->fd = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
 					S_IRUSR | S_IWUSR);
-			fill_heredoc(tmp);
+			fill_heredoc(tmp, tmpc, vars);
 		}
 		tmp = tmp->next;
 	}
@@ -135,7 +135,7 @@ void	close_rdirs(t_token **redirections, t_command *tmp)
 }
 
 // fonction qui remplit le fichier tmp/here_doc avec le contenu du heredoc
-void	fill_heredoc(t_token *tmp)
+void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 {
 	char	*str;
 	char	*limitor;
@@ -154,7 +154,15 @@ void	fill_heredoc(t_token *tmp)
 			free(limitor);
 			close(fd_tmp);
 			unlink("/tmp/here_doc");
-			return ;
+			if (str == NULL)
+			{
+				close_rdirs(&(tmpc->redirections), tmpc);
+				free_and_exit(vars);
+				ft_printf("\nexit\n");
+				exit (0);
+			}
+			else
+				return ;
 		}
 		ft_putstr_fd(str, fd_tmp);
 		free(str);
