@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/26 17:37:49 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/28 12:49:26 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ int	main(int ac, char **av, char **envp)
 		signal_action();
 		input = readline("minishell$ ");
 		exit_sig = ft_itoa(g_sig);
-		if (g_sig == 130 || g_sig == 131)
-			new_return_value(env, exit_sig);
+		// if (g_sig == 130 || g_sig == 131)
+		// 	new_return_value(env, exit_sig);
 		free(exit_sig);
 		if (input == NULL)
 		{

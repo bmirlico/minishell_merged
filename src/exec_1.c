@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/26 18:20:54 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/27 15:15:05 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void	wait_exit_code(t_pipex vars)
 	int			status;
 	int			exit_code;
 	char		*str_exit;
+	int			term_signal;
 
 	tmp = *(vars.copy_cmds);
 	while (tmp != NULL)
@@ -102,7 +103,18 @@ void	wait_exit_code(t_pipex vars)
 			new_return_value(vars.copy_t_env, str_exit);
 			free(str_exit);
 			printf("Exit status: %d\n", exit_code);
-		} 
+		}
+		else if (WIFSIGNALED(status))
+		{
+			term_signal = WTERMSIG(status);
+			if (term_signal == SIGQUIT && tmp->next == NULL)
+			{
+				ft_printf("Quit (core dumped)\n");
+				new_return_value(vars.copy_t_env, "131");
+			}
+			else if (term_signal == SIGINT && tmp->next == NULL)
+				new_return_value(vars.copy_t_env, "130");
+		}
 		tmp = tmp->next;
 	}
 }

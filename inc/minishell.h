@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/26 15:47:55 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/28 12:52:05 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -531,6 +531,12 @@ void			signal_action(void);
 void			signal_sigint(void);
 
 void			signal_ctrlc(int sig);
+
+void			signal_sigint_heredoc(void);
+
+void			signal_ctrlc_heredoc(int sig);
+
+void			signal_ctrlc_cmd(int sig);
 
 void			signal_sigquit(void);
 

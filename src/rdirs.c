@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:42:19 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/26 15:18:49 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/07/28 12:45:42 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,27 +138,34 @@ void	close_rdirs(t_token **redirections, t_command *tmp)
 void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 {
 	char	*str;
-	char	*limitor;
 	int		fd_tmp;
+	int		old_stdin;
 
 	fd_tmp = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR);
-	limitor = ft_strjoin(tmp->str, "\n");
+	old_stdin = dup(0);
+	signal_sigint_heredoc();
 	while (1)
 	{
-		ft_putstr_fd("> ", 1);
-		str = get_next_line(0);
-		if (str == NULL || !ft_strncmp(str, limitor, ft_strlen(limitor) + 1))
+		str = readline("> ");
+		if (g_sig == 130)
 		{
-			free(str);
-			free(limitor);
 			close(fd_tmp);
 			unlink("/tmp/here_doc");
+			close_rdirs(&(tmpc->redirections), tmpc);
+			dup2(old_stdin, STDIN_FILENO);
+			close(old_stdin);
+			return ;
+		}
+		if (str == NULL || !ft_strncmp(str, tmp->str, ft_strlen(tmp->str) + 1))
+		{
+			close(fd_tmp);
+			unlink("/tmp/here_doc");
+			close_rdirs(&(tmpc->redirections), tmpc);
 			if (str == NULL)
 			{
-				close_rdirs(&(tmpc->redirections), tmpc);
 				free_and_exit(vars);
-				ft_printf("\nexit\n");
+				ft_printf("exit\n");
 				exit (0);
 			}
 			else
@@ -167,5 +174,4 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 		ft_putstr_fd(str, fd_tmp);
 		free(str);
 	}
-	free(limitor);
 }
