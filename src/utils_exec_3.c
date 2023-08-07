@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 18:02:58 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/21 17:03:35 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 20:26:05 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,11 @@ void	free_vars(t_pipex vars)
 	}
 	free(vars.tab_pid);
 	free_tab(vars.copy_env_tmp);
+}
+
+void	init_vars_heredoc(int *fd_tmp, int *old_stdin)
+{
+	*fd_tmp = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR);
+	*old_stdin = dup(0);
 }

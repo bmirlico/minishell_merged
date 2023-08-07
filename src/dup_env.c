@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 13:27:48 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/21 14:29:00 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/04 13:35:43 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	dup_env(char **envp, t_env **env)
 	new->var_value = ft_strdup("0");
 	new->next = NULL;
 	add_back_to_env(env, new);
-	// display_env(*env);
 }
 
 // This function fill an element of the list with a var_env
@@ -103,6 +102,5 @@ char	**create_env_tab(t_env *env)
 		tmp = tmp->next;
 	}
 	env_tmp[i] = NULL;
-	// display_tab(env_tmp);
 	return (env_tmp);
 }

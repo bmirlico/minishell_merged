@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/13 16:42:44 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/11 15:49:06 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:20:20 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,12 @@ void	ft_strncpy(char *value, char *input, int len)
 		i++;
 	}
 	value[i] = '\0';
+}
+
+// fonction pour etre a la norme dans la fonction
+// check_bad_env_variable du fichier syntax_error_2.c
+void	init_bad_env_var(int *i, int *var_env)
+{
+	*i = -1;
+	*var_env = CLOSED;
 }

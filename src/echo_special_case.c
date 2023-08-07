@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 13:20:53 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/21 14:31:47 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 20:35:37 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ void	print_varenv_no_space(char *str)
 			i--;
 		}
 		ft_printf("%c", str[i]);
-		// write(1, &str[i], 1);
 		i++;
 	}
 }

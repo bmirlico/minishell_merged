@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   remove_quote.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:05:59 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/18 15:55:11 by clbernar         ###   ########.fr       */
+/*   Updated: 2023/08/07 20:43:30 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ void	remove_quotes_tab(char **tab)
 	quotes = 0;
 	if (tab == NULL)
 		return ;
-	// RAJOUTE
 	if (ft_strlen(tab[0]) != 0
 		&& ft_strncmp(tab[0], "echo", ft_strlen(tab[0])) == 0)
 		return ;

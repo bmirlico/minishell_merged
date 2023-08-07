@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 14:49:29 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 22:24:44 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:12:50 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void	check_bad_subst_cmd(t_command *tmp, t_pipex vars, t_token **rdirs)
 		return ;
 	while (tmp->cmd_args[i] != NULL)
 	{
-		//printf("%d\n", check_bad_env_variable(tmp->cmd_args[i]));
 		if (check_bad_env_variable(tmp->cmd_args[i]) == 2)
 		{
 			str = ft_strjoin(tmp->cmd_args[i], ": bad substitution\n");

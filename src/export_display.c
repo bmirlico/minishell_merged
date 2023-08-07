@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 14:16:20 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/24 16:31:02 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/04 13:35:00 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ int	already_exist(t_env *env, char *declaration)
 	while (declaration[i] != '=')
 		i++;
 	name = ft_substr(declaration, 0, i);
-	// ft_printf("%s\n", name);
 	while (tmp != NULL)
 	{
 		if (ft_strncmp(tmp->var_name, name, ft_strlen(name) + 1) == 0)

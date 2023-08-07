@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/27 15:15:05 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:11:33 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	execution(t_pipex vars)
 	{
 		if (!is_bad_subst_cmd(tmp))
 			open_rdirs(&(tmp->redirections), tmp, vars);
-		// reset_signal(vars);
 		if (tmp->cmd_args != NULL && vars.nb_pipes == 0
 			&& is_builtin(tmp->cmd_args[0]))
 			exec_builtin(tmp, vars);
@@ -45,7 +44,6 @@ void	execution(t_pipex vars)
 // fonction qui réalise le fork et l'exécution des commandes ds un child process
 void	pipex(t_command *tmp, t_pipex vars, t_token **rdirs)
 {
-
 	init_pipe(vars, tmp->index);
 	vars.tab_pid[tmp->index] = fork();
 	if (vars.tab_pid[tmp->index] == -1)
@@ -105,16 +103,7 @@ void	wait_exit_code(t_pipex vars)
 			printf("Exit status: %d\n", exit_code);
 		}
 		else if (WIFSIGNALED(status))
-		{
-			term_signal = WTERMSIG(status);
-			if (term_signal == SIGQUIT && tmp->next == NULL)
-			{
-				ft_printf("Quit (core dumped)\n");
-				new_return_value(vars.copy_t_env, "131");
-			}
-			else if (term_signal == SIGINT && tmp->next == NULL)
-				new_return_value(vars.copy_t_env, "130");
-		}
+			handle_signals_in_parent(term_signal, status, vars, tmp);
 		tmp = tmp->next;
 	}
 }

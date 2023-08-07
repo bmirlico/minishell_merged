@@ -1,16 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_3.c                                           :+:      :+:    :+:   */
+/*   exit_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 14:53:28 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/06/27 15:04:13 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 21:06:22 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+// fonction qui gere le cas "non numeric" de exit
+// fait pour la norme
+void	exit_out_bounds(char *error_str, char *str, t_pipex vars)
+{
+	exit_non_numeric(&error_str, tmp->cmd_args[1]);
+	ft_putstr_fd(error_str, 2);
+	free(error_str);
+	free_and_exit(vars);
+	exit(2);
+}
+
+// fonction qui gere le cas "too many arguments" de exit
+// fait pour la norme
+void	exit_too_many_args(t_pipex vars)
+{
+	ft_putstr_fd("exit: too many arguments\n", 2);
+	new_return_value(vars.copy_t_env, "1");
+	if (vars.nb_pipes > 0)
+	{
+		free_and_exit(vars);
+		exit(EXIT_FAILURE);
+	}
+}
+
+// fonction qui gere les cas "valides" de exit
+// fait pour la norme
+void	exit_normal_cases(int exit_code, t_pipex vars)
+{
+	if (!(exit_code >= 0 && exit_code <= 255))
+		exit_code %= 256;
+	free_and_exit(vars);
+	exit(exit_code);
+}
 
 // fonction similaire à atoi, sauf qu'elle check en plus si
 // l'entier résultat ne dépasse LONG_MIN et LONG_MAX
@@ -50,26 +84,4 @@ void	init_strtoll(int *i, int *sign, long long *res, int *digit)
 	*sign = 1;
 	*res = 0;
 	*digit = 0;
-}
-
-// sous-fonction de strtoll pour check le signe si on tombe sur
-// un '-' et passer la norme
-void	check_sign(char c, int *i, int *sign)
-{
-	if (c == '+' || c == '-')
-	{
-		if (c == '-')
-			*sign *= -1;
-		*i += 1;
-	}
-}
-
-// sous-fonction de strtoll qui affecte LONG_MAX et LONG_MIN
-// si on dépasse les bornes long long
-void	handle_bounds(int *sign, long long *res)
-{
-	if (*sign == -1)
-		*res = LONG_MIN;
-	else
-		*res = LONG_MAX;
 }

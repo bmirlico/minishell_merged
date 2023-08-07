@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 12:46:59 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 22:07:14 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:45:02 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int	is_builtin(char *cmd)
 
 // Fonction qui appelle les fonctions d'execution
 // des builtins
-// MODIFIER LES BUILTIN EN RAJOUTANT LES EXIT CODE ET EN RAJOUTANT EN PARAMETRE LA STRUCTURE VARS
+// MODIFIER LES BUILTIN EN RAJOUTANT LES EXIT CODE ET EN RAJOUTANT
+// EN PARAMETRE LA STRUCTURE VARS
 // ATTENTION A BIEN FERMER OLD_STDOUT
 void	exec_builtin(t_command *tmp, t_pipex vars)
 {

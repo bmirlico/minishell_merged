@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:07:56 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/28 12:52:08 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:11:56 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,17 @@ void	signal_sigquit(void)
 	sa.sa_flags = 0;
 	sigaction(SIGQUIT, &sa, NULL);
 	tcsetattr(STDIN_FILENO, TCSANOW, &original_attributes);
+}
+
+void	handle_signals_in_parent(int term_signal, int status, t_pipex vars,
+			t_command	*tmp)
+{
+	term_signal = WTERMSIG(status);
+	if (term_signal == SIGQUIT && tmp->next == NULL)
+	{
+		ft_printf("Quit (core dumped)\n");
+		new_return_value(vars.copy_t_env, "131");
+	}
+	else if (term_signal == SIGINT && tmp->next == NULL)
+		new_return_value(vars.copy_t_env, "130");
 }

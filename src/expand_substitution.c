@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_substitution.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: clbernar <clbernar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:07:25 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/10 19:03:28 by clbernar         ###   ########.fr       */
+/*   Updated: 2023/08/04 13:34:23 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,6 @@ int	var_env_copy(t_env *env, char *str, char *new, int dest)
 		free(tmp);
 	return (ft_strlen(var_env_value));
 }
-
 
 // This function fill the new string with char from the old string, or with
 // char from a var_env

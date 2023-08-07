@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 14:05:01 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 15:44:39 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 20:58:38 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,30 +40,11 @@ void	conditions_exit(t_command *tmp, long long exit_code, int len_tab,
 	}
 	else if (is_out_of_range(exit_code, tmp->cmd_args[1])
 		|| is_numeric(tmp->cmd_args[1]) == 0)
-	{
-		exit_non_numeric(&error_str, tmp->cmd_args[1]);
-		ft_putstr_fd(error_str, 2);
-		free(error_str);
-		free_and_exit(vars);
-		exit(2);
-	}
+		exit_out_bounds(error_str, tmp->cmd_args[1], vars);
 	else if (len_tab > 2)
-	{
-		ft_putstr_fd("exit: too many arguments\n", 2);
-		new_return_value(vars.copy_t_env, "1");
-		if (vars.nb_pipes > 0)
-		{
-			free_and_exit(vars);
-			exit(EXIT_FAILURE);
-		}
-	}
+		exit_too_many_args(vars);
 	else
-	{
-		if (!(exit_code >= 0 && exit_code <= 255))
-			exit_code %= 256;
-		free_and_exit(vars);
-		exit(exit_code);
-	}
+		exit_normal_cases(exit_code, vars);
 }
 
 // fonction qui check si l'argument d'exit est bien un nombre

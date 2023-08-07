@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/13 16:19:04 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/24 21:26:36 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:20:41 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ int	check_bad_env_variable(char *input)
 	int	i;
 	int	var_env;
 
-	i = -1;
-	var_env = CLOSED;
+	init_bad_env_var(&i, &var_env);
 	while (input[++i])
 	{
 		if (input[i] == '$' && input[i + 1] == '{' && input[i + 2] == '}')

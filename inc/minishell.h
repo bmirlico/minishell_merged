@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/28 12:52:05 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 21:20:29 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,11 @@ typedef struct s_pipex {
 
 void			minishell(t_env *env, char *input);
 
+// utils_main.c @Bastien
+
+void			init_lists(t_token	**lst, t_token **lst_j,
+					t_command **cmds);
+
 void			display_parser(t_command **lst);
 
 void			display_lexer(t_token **lst);
@@ -129,7 +134,7 @@ int				check_last_exitcode_case(char *input, int index);
 
 int				check_rdir(int rdir);
 
-// utils.c @Bastien @Clement
+// utils_syntax.c @Bastien @Clement
 
 int				is_special_char(char c);
 
@@ -139,7 +144,7 @@ int				is_delimiter(char c, char *delimiter);
 
 void			ft_strncpy(char *value, char *input, int len);
 
-int				count_slash(char *str);
+void			init_bad_env_var(int *i, int *var_env);
 
 /* 1) LEXER i.e tokenisation de l'input */
 
@@ -374,20 +379,35 @@ t_token			*get_last_infile(t_token **rdirs);
 
 t_token			*get_last_outfile(t_token **rdirs);
 
-// rdirs_.c @Bastien
+// rdirs_1.c @Bastien
 
 void			open_rdirs(t_token **redirections, t_command *tmpc,
+					t_pipex vars);
+
+void			handle_open_rdirs(t_token *tmp, t_command *tmpc,
 					t_pipex vars);
 
 void			handle_errors_rdirs(t_command *tmpc, t_pipex vars,
 					t_token **rdirs);
 
+void			check_error_rdirs(t_command *tmpc, t_pipex vars, t_token *tmp,
+					t_token **rdirs);
+
 void			close_pipe_and_free(t_pipex vars, int index);
+
+// rdirs_2.c @Bastien
 
 void			close_rdirs(t_token **redirections, t_command *tmp);
 
 void			fill_heredoc(t_token *tmp, t_command *tmpc,
 					t_pipex vars);
+
+void			close_heredoc_sigint(int fd_tmp, int old_stdin,
+					t_command *tmpc);
+
+void			close_heredoc_(int fd_tmp, t_command *tmpc);
+
+void			handle_ctrld(int fd_tmp, t_pipex vars, t_command *tmpc);
 
 // utils_exec_1.c @Bastien
 
@@ -395,7 +415,6 @@ void			init_struct(t_pipex *vars);
 
 void			get_index_cmds(t_command **cmds);
 
-// int				get_nb_pipes(char *input);
 int				lst_cmd_size(t_command *lst);
 
 int				count_slash(char *str);
@@ -421,6 +440,8 @@ void			free_pipex(t_pipex vars);
 
 void			free_vars(t_pipex vars);
 
+void			init_vars_heredoc(int *fd_tmp, int *old_stdin);
+
 /* 5) BUILT-INS et des builtins */
 // echo, cd, pwd, export, unset, env, exit
 
@@ -441,6 +462,13 @@ void			builtins(int len, t_command *tmp, t_pipex vars);
 
 void			built_in_cd(t_command *tmp, t_pipex vars);
 
+void			cd_pb_arguments(int len_tab, char *cwd, t_pipex vars);
+
+void			cd_working(char *str, char *cwd, t_pipex vars);
+
+void			cd_not_working(char *error_str, char *cwd, t_command *tmp,
+					t_pipex vars);
+
 // pwd.c @Bastien
 
 void			built_in_pwd(t_pipex vars);
@@ -460,9 +488,15 @@ int				is_out_of_range(long long exit_code, char *str);
 
 // exit_2.c @Bastien
 
+void			exit_out_bounds(char *error_str, char *str, t_pipex vars);
+
+void			exit_normal_cases(int exit_code, t_pipex vars);
+
 long long		ft_strtoll(const char *nptr);
 
 void			init_strtoll(int *i, int *sign, long long *res, int *digit);
+
+// exit_3.c @Bastien
 
 void			check_sign(char c, int *i, int *sign);
 
@@ -539,6 +573,9 @@ void			signal_ctrlc_heredoc(int sig);
 void			signal_ctrlc_cmd(int sig);
 
 void			signal_sigquit(void);
+
+void			handle_signals_in_parent(int term_signal, int status,
+					t_pipex vars, t_command	*tmp);
 
 // reset_signal.c @Bastien @Clement
 

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 18:47:05 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/24 15:54:00 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:45:36 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,11 @@ int	is_option_n(char *str)
 // if the otpion -n is not present
 void	built_in_echo(t_command *cmd, t_pipex vars)
 {
-	// Gestion des rdirs
 	if (get_len_tab(cmd->cmd_args) > 1)
 		echo(cmd, vars.copy_t_env);
 	new_return_value(vars.copy_t_env, "0");
 	if (get_len_tab(cmd->cmd_args) > 1 && is_option_n(cmd->cmd_args[1]) == 1)
 		return ;
-	// if (get_len_tab(cmd->cmd_args) > 1
-	// 	&& ft_strncmp(cmd->cmd_args[1], "-n", ft_strlen("-n") == 0))
-	// 	return ;
 	ft_printf("\n");
 	if (vars.nb_pipes > 0)
 	{

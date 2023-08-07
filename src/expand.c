@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 20:01:19 by clbernar          #+#    #+#             */
-/*   Updated: 2023/07/24 21:50:12 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/07 20:36:54 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ void	expand(t_env *env, t_command **cmds)
 	while (tmp != NULL)
 	{
 		remove_quotes_tab(tmp->cmd_args);
-		// remove_quotes_rdir(tmp->redirections); gerer bad substitution ds l'exec et si ca passe je peux gerer les string vides
 		tmp = tmp->next;
 	}
 }
