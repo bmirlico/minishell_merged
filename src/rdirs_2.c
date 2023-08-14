@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 19:27:11 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 20:25:58 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 18:19:38 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,21 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 	int		old_stdin;
 
 	init_vars_heredoc(&fd_tmp, &old_stdin);
+	signal_sigint_heredoc();
 	while (1)
 	{
 		str = readline("> ");
-		if (g_sig == 130)
+		// printf("%d\n", g_sig);
+		if (g_sig == 1)
 		{
 			close_heredoc_sigint(fd_tmp, old_stdin, tmpc);
 			return ;
 		}
-		if (str == NULL)
-			handle_ctrld(fd_tmp, vars, tmpc);
+		else if (str == NULL)
+			handle_ctrld(fd_tmp, vars, tmpc, old_stdin);
 		else if (!ft_strncmp(str, tmp->str, ft_strlen(tmp->str) + 1))
 		{
-			close_heredoc_(fd_tmp, tmpc);
+			close_heredoc_(fd_tmp, tmpc, old_stdin);
 			return ;
 		}
 		ft_putstr_fd(str, fd_tmp);
@@ -71,16 +73,18 @@ void	close_heredoc_sigint(int fd_tmp, int old_stdin, t_command *tmpc)
 	close(old_stdin);
 }
 
-void	close_heredoc_(int fd_tmp, t_command *tmpc)
+void	close_heredoc_(int fd_tmp, t_command *tmpc, int old_stdin)
 {
 	close(fd_tmp);
+	close(old_stdin);
 	unlink("/tmp/here_doc");
 	close_rdirs(&(tmpc->redirections), tmpc);
 }
 
-void	handle_ctrld(int fd_tmp, t_pipex vars, t_command *tmpc)
+void	handle_ctrld(int fd_tmp, t_pipex vars, t_command *tmpc,
+			int old_stdin)
 {
-	close_heredoc_(fd_tmp, tmpc);
+	close_heredoc_(fd_tmp, tmpc, old_stdin);
 	free_and_exit(vars);
 	ft_printf("exit\n");
 	exit (0);

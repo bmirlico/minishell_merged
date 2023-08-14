@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 21:17:23 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 18:09:37 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	main(int ac, char **av, char **envp)
 		}
 		minishell(env, input);
 		free(input);
+		//g_sig = 0;
 	}
 	free_envlst(&env);
 	return (0);

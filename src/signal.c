@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:07:56 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 12:58:50 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 18:22:49 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,21 +36,26 @@ void	signal_sigint(void)
 void	signal_ctrlc(int sig)
 {
 	(void)sig;
+	//printf("%d\n", g_sig);
 	rl_on_new_line();
 	rl_replace_line("", 0);
-	write(STDOUT_FILENO, "\n", 1);
+	// if (g_sig != 1)
+	// {
+	// 	write(STDOUT_FILENO, "\n", 1);
+	// 	g_sig = 130;
+	// }
 	rl_redisplay();
-	g_sig = 130;
+	//g_sig = 130;
 }
 
-void	signal_ctrlc_cmd(int sig)
-{
-	(void)sig;
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	write(STDOUT_FILENO, "\n", 1);
-	g_sig = 130;
-}
+// void	signal_ctrlc_cmd(int sig)
+// {
+// 	(void)sig;
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// 	write(STDOUT_FILENO, "LOL\n", 1);
+// 	//g_sig = 130;
+// }
 
 // fonction qui gere le CTRL+C ds le here_doc
 void	signal_sigint_heredoc(void)
@@ -71,8 +76,8 @@ void	signal_ctrlc_heredoc(int sig)
 	// rl_on_new_line();
 	// rl_replace_line("", 0);
 	close(STDIN_FILENO);
-	write(STDOUT_FILENO, "> ^C", 4);
-	g_sig = 130;
+	write(STDOUT_FILENO, "> ^C\n", 5);
+	g_sig = 1;
 }
 
 // fonction qui gere le CTRL+backslash 

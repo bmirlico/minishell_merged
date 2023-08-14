@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 13:05:39 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 18:24:20 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	execution(t_pipex vars)
 // fonction qui réalise le fork et l'exécution des commandes ds un child process
 void	pipex(t_command *tmp, t_pipex vars, t_token **rdirs)
 {
+	ignore_signal();
 	init_pipe(vars, tmp->index);
 	vars.tab_pid[tmp->index] = fork();
 	if (vars.tab_pid[tmp->index] == -1)
@@ -93,16 +94,24 @@ void	wait_exit_code(t_pipex vars)
 	while (tmp != NULL)
 	{
 		waitpid(vars.tab_pid[tmp->index], &status, 0);
+		//printf("WIFSIGNALED: %d\n", WIFSIGNALED(status));
 		if (WIFEXITED(status) && tmp->index == vars.nb_cmds - 1)
 		{
+			printf("EXIT");
 			exit_code = WEXITSTATUS(status);
 			str_exit = ft_itoa(exit_code);
-			new_return_value(vars.copy_t_env, str_exit);
+			if (g_sig == 130)
+				new_return_value(vars.copy_t_env, "130");
+			else
+				new_return_value(vars.copy_t_env, str_exit);
 			free(str_exit);
-			printf("Exit status: %d\n", exit_code);
+			//printf("Exit status: %d\n", exit_code);
 		}
 		else if (WIFSIGNALED(status))
+		{
+			printf("SIGNAL");
 			handle_signals_in_parent(status, vars, tmp);
+		}
 		tmp = tmp->next;
 	}
 }
