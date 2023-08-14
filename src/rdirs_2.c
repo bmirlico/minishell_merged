@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 19:27:11 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 18:19:38 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 21:05:57 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,11 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 	while (1)
 	{
 		str = readline("> ");
-		// printf("%d\n", g_sig);
 		if (g_sig == 1)
 		{
+			printf("OK\n");
 			close_heredoc_sigint(fd_tmp, old_stdin, tmpc);
+			new_return_value(vars.copy_t_env, "130");
 			return ;
 		}
 		else if (str == NULL)

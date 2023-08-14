@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 18:09:37 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 21:08:52 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,14 @@ int	main(int ac, char **av, char **envp)
 	if (ac > 1)
 		return (ft_printf("No arguments required to launch the shell.\n"), 1);
 	dup_env(envp, &env);
+	g_sig = 0;
 	while (1)
 	{
 		signal_action();
 		input = readline("minishell$ ");
+		printf("GSIG main: %d\n", g_sig);
+		if (g_sig == 130)
+			new_return_value(env, "130");
 		if (input == NULL)
 		{
 			ft_printf("exit\n");
@@ -41,7 +45,6 @@ int	main(int ac, char **av, char **envp)
 		}
 		minishell(env, input);
 		free(input);
-		//g_sig = 0;
 	}
 	free_envlst(&env);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 18:24:20 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 22:13:59 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	execution(t_pipex vars)
 			pipex(tmp, vars, &(tmp->redirections));
 		tmp = tmp->next;
 	}
+	//printf("GSIG: %d\n", g_sig);
 	if ((vars.nb_pipes == 0 && !is_builtin(cmd)) || vars.nb_pipes > 0)
 		wait_exit_code(vars);
 	free_vars(vars);
@@ -97,19 +98,21 @@ void	wait_exit_code(t_pipex vars)
 		//printf("WIFSIGNALED: %d\n", WIFSIGNALED(status));
 		if (WIFEXITED(status) && tmp->index == vars.nb_cmds - 1)
 		{
-			printf("EXIT");
+			//printf("EXIT");
 			exit_code = WEXITSTATUS(status);
 			str_exit = ft_itoa(exit_code);
-			if (g_sig == 130)
-				new_return_value(vars.copy_t_env, "130");
-			else
+			if (tmp->cmd_args != NULL) // A CHECKER
 				new_return_value(vars.copy_t_env, str_exit);
 			free(str_exit);
 			//printf("Exit status: %d\n", exit_code);
+			// if (g_sig == 1 || g_sig == 130)
+			// 	g_sig = 0;
+			if (tmp->cmd_args != NULL && tmp->redirections == NULL) // A CHECK
+				g_sig = 0;
 		}
 		else if (WIFSIGNALED(status))
 		{
-			printf("SIGNAL");
+			//printf("SIGNAL");
 			handle_signals_in_parent(status, vars, tmp);
 		}
 		tmp = tmp->next;

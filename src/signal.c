@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:07:56 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 18:22:49 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 20:53:48 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,14 @@ void	signal_sigint(void)
 void	signal_ctrlc(int sig)
 {
 	(void)sig;
-	//printf("%d\n", g_sig);
+	if (g_sig != 1)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		g_sig = 130;
+	}
 	rl_on_new_line();
 	rl_replace_line("", 0);
-	// if (g_sig != 1)
-	// {
-	// 	write(STDOUT_FILENO, "\n", 1);
-	// 	g_sig = 130;
-	// }
 	rl_redisplay();
-	//g_sig = 130;
 }
 
 // void	signal_ctrlc_cmd(int sig)
@@ -108,7 +106,14 @@ void	handle_signals_in_parent(int status, t_pipex vars,
 	{
 		ft_printf("Quit (core dumped)\n");
 		new_return_value(vars.copy_t_env, "131");
+		g_sig = 131;
 	}
-	else if (term_signal == SIGINT && tmp->next == NULL)
-		new_return_value(vars.copy_t_env, "130");
+	else if (term_signal == SIGINT)
+	{
+		ft_printf("\n");
+		if (tmp->next == NULL)
+			new_return_value(vars.copy_t_env, "130");
+		g_sig = 130;
+	}
+	//printf("GSIG parent: %d\n", g_sig);
 }
