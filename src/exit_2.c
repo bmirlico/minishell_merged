@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 14:53:28 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 21:06:22 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 13:09:41 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // fait pour la norme
 void	exit_out_bounds(char *error_str, char *str, t_pipex vars)
 {
-	exit_non_numeric(&error_str, tmp->cmd_args[1]);
+	exit_non_numeric(&error_str, str);
 	ft_putstr_fd(error_str, 2);
 	free(error_str);
 	free_and_exit(vars);

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 21:20:29 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 13:09:16 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -490,6 +490,8 @@ int				is_out_of_range(long long exit_code, char *str);
 
 void			exit_out_bounds(char *error_str, char *str, t_pipex vars);
 
+void			exit_too_many_args(t_pipex vars);
+
 void			exit_normal_cases(int exit_code, t_pipex vars);
 
 long long		ft_strtoll(const char *nptr);
@@ -574,7 +576,7 @@ void			signal_ctrlc_cmd(int sig);
 
 void			signal_sigquit(void);
 
-void			handle_signals_in_parent(int term_signal, int status,
+void			handle_signals_in_parent(int status,
 					t_pipex vars, t_command	*tmp);
 
 // reset_signal.c @Bastien @Clement

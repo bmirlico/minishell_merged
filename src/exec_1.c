@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 16:11:33 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 13:05:39 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	child_process(t_command *tmp, t_pipex vars, t_token **rdirs)
 		exec_cmd(tmp, vars);
 }
 
-// fonction qui wait les child process et recupere l'exit code de la 
+// fonction qui wait les child process et recupere l'exit code de la
 // derniere commande, et l'affecte a l'env ($?)
 void	wait_exit_code(t_pipex vars)
 {
@@ -88,7 +88,6 @@ void	wait_exit_code(t_pipex vars)
 	int			status;
 	int			exit_code;
 	char		*str_exit;
-	int			term_signal;
 
 	tmp = *(vars.copy_cmds);
 	while (tmp != NULL)
@@ -103,7 +102,7 @@ void	wait_exit_code(t_pipex vars)
 			printf("Exit status: %d\n", exit_code);
 		}
 		else if (WIFSIGNALED(status))
-			handle_signals_in_parent(term_signal, status, vars, tmp);
+			handle_signals_in_parent(status, vars, tmp);
 		tmp = tmp->next;
 	}
 }
@@ -112,7 +111,7 @@ void	wait_exit_code(t_pipex vars)
 // pour préparer l'execution de la commande
 void	exec_cmd(t_command *tmp, t_pipex vars)
 {
-	char		*cmd_with_path;
+	char	*cmd_with_path;
 
 	if (count_slash(tmp->cmd_args[0]) > 0 || vars.path == NULL)
 		cmd_with_path = ft_strdup(tmp->cmd_args[0]);

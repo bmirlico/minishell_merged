@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:07:56 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 16:11:56 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 12:58:50 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,11 @@ void	signal_sigquit(void)
 	tcsetattr(STDIN_FILENO, TCSANOW, &original_attributes);
 }
 
-void	handle_signals_in_parent(int term_signal, int status, t_pipex vars,
+void	handle_signals_in_parent(int status, t_pipex vars,
 			t_command	*tmp)
 {
+	int	term_signal;
+
 	term_signal = WTERMSIG(status);
 	if (term_signal == SIGQUIT && tmp->next == NULL)
 	{

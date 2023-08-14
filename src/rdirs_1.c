@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rdirs.c                                            :+:      :+:    :+:   */
+/*   rdirs_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:42:19 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 19:27:24 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/14 13:07:11 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,8 @@ void	handle_open_rdirs(t_token *tmp, t_command *tmpc, t_pipex vars)
 void	handle_errors_rdirs(t_command *tmpc, t_pipex vars, t_token **rdirs)
 {
 	t_token	*tmp;
-	char	*error;
 
 	tmp = *rdirs;
-	error = NULL;
 	while (tmp != NULL)
 	{
 		if ((tmp->type == T_INFILE || tmp->type == T_LIMITOR)
@@ -76,6 +74,9 @@ void	handle_errors_rdirs(t_command *tmpc, t_pipex vars, t_token **rdirs)
 void	check_error_rdirs(t_command *tmpc, t_pipex vars, t_token *tmp,
 			t_token **rdirs)
 {
+	char	*error;
+
+	error = NULL;
 	if (check_bad_env_variable(tmp->str) == 2)
 	{
 		error = ft_strjoin(tmp->str, ": bad substitution\n");
