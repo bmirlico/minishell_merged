@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 21:08:52 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 13:15:44 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,16 @@ int	main(int ac, char **av, char **envp)
 	{
 		signal_action();
 		input = readline("minishell$ ");
-		printf("GSIG main: %d\n", g_sig);
-		if (g_sig == 130)
-			new_return_value(env, "130");
+		//printf("GSIG main: %d\n", g_sig);
 		if (input == NULL)
 		{
 			ft_printf("exit\n");
 			free_envlst(&env);
 			exit (0);
 		}
+		if (g_sig == 130)
+			new_return_value(env, "130");
+		g_sig = 0;
 		minishell(env, input);
 		free(input);
 	}
@@ -72,6 +73,8 @@ void	minishell(t_env *env, char *input)
 		copy_lists(&vars, &lst, &lst_j, &cmds);
 		if (input != NULL)
 			execution(vars);
+		else
+			g_sig = 0;
 		free_lists(&lst, &lst_j, &cmds);
 	}
 	else

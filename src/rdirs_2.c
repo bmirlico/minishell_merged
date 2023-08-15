@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 19:27:11 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 21:05:57 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 17:31:04 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,8 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 	while (1)
 	{
 		str = readline("> ");
-		if (g_sig == 1)
+		if (g_sig == 1 || g_sig == 130)
 		{
-			printf("OK\n");
 			close_heredoc_sigint(fd_tmp, old_stdin, tmpc);
 			new_return_value(vars.copy_t_env, "130");
 			return ;
@@ -57,9 +56,11 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 			handle_ctrld(fd_tmp, vars, tmpc, old_stdin);
 		else if (!ft_strncmp(str, tmp->str, ft_strlen(tmp->str) + 1))
 		{
+			///write(2, "OK\n", 3);
 			close_heredoc_(fd_tmp, tmpc, old_stdin);
 			return ;
 		}
+		str = ft_strfjoin(str, "\n");
 		ft_putstr_fd(str, fd_tmp);
 		free(str);
 	}
@@ -79,7 +80,8 @@ void	close_heredoc_(int fd_tmp, t_command *tmpc, int old_stdin)
 	close(fd_tmp);
 	close(old_stdin);
 	unlink("/tmp/here_doc");
-	close_rdirs(&(tmpc->redirections), tmpc);
+	(void)tmpc;
+	//close_rdirs(&(tmpc->redirections), tmpc); // A CHECKER
 }
 
 void	handle_ctrld(int fd_tmp, t_pipex vars, t_command *tmpc,

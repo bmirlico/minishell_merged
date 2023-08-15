@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:07:56 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 20:53:48 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 15:37:42 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,18 +82,18 @@ void	signal_ctrlc_heredoc(int sig)
 void	signal_sigquit(void)
 {
 	struct sigaction	sa;
-	struct termios		original_attributes;
-	struct termios		new_attributes;
+	// struct termios		original_attributes;
+	// struct termios		new_attributes;
 
-	tcgetattr(0, &original_attributes);
-	new_attributes = original_attributes;
-	new_attributes.c_lflag &= ~ECHOCTL;
-	tcsetattr(0, TCSANOW, &new_attributes);
+	// tcgetattr(0, &original_attributes);
+	// new_attributes = original_attributes;
+	// new_attributes.c_lflag &= ~ECHOCTL;
+	// tcsetattr(0, TCSANOW, &new_attributes);
 	sa.sa_handler = SIG_IGN;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sigaction(SIGQUIT, &sa, NULL);
-	tcsetattr(STDIN_FILENO, TCSANOW, &original_attributes);
+	//tcsetattr(STDIN_FILENO, TCSANOW, &original_attributes);
 }
 
 void	handle_signals_in_parent(int status, t_pipex vars,

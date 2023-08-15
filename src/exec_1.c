@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 22:13:59 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:05:02 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	execution(t_pipex vars)
 			pipex(tmp, vars, &(tmp->redirections));
 		tmp = tmp->next;
 	}
-	//printf("GSIG: %d\n", g_sig);
 	if ((vars.nb_pipes == 0 && !is_builtin(cmd)) || vars.nb_pipes > 0)
 		wait_exit_code(vars);
 	free_vars(vars);
@@ -107,8 +106,8 @@ void	wait_exit_code(t_pipex vars)
 			//printf("Exit status: %d\n", exit_code);
 			// if (g_sig == 1 || g_sig == 130)
 			// 	g_sig = 0;
-			if (tmp->cmd_args != NULL && tmp->redirections == NULL) // A CHECK
-				g_sig = 0;
+			// if (tmp->cmd_args != NULL && tmp->redirections == NULL) // A CHECK
+			// 	g_sig = 0;
 		}
 		else if (WIFSIGNALED(status))
 		{
