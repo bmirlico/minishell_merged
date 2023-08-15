@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 18:05:02 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:37:31 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ void	execution(t_pipex vars)
 	else
 		cmd = NULL;
 	init_struct(&vars);
+	open_heredocs(vars);
 	while (tmp != NULL)
 	{
-		if (!is_bad_subst_cmd(tmp))
+		if (!is_bad_subst_cmd(tmp) && g_sig != 1)
 			open_rdirs(&(tmp->redirections), tmp, vars);
 		if (tmp->cmd_args != NULL && vars.nb_pipes == 0
 			&& is_builtin(tmp->cmd_args[0]))

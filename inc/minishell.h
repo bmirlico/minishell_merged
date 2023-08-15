@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 16:29:03 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:53:48 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,6 +399,8 @@ void			close_pipe_and_free(t_pipex vars, int index);
 
 void			close_rdirs(t_token **redirections, t_command *tmp);
 
+void			open_heredocs(t_pipex vars);
+
 void			fill_heredoc(t_token *tmp, t_command *tmpc,
 					t_pipex vars);
 
@@ -442,6 +444,8 @@ void			free_pipex(t_pipex vars);
 void			free_vars(t_pipex vars);
 
 void			init_vars_heredoc(int *fd_tmp, int *old_stdin);
+
+void			init_fds(t_command **cmds);
 
 /* 5) BUILT-INS et des builtins */
 // echo, cd, pwd, export, unset, env, exit

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 19:27:11 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 17:31:04 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 19:17:49 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,31 @@ void	close_rdirs(t_token **redirections, t_command *tmp)
 				close(temp->fd);
 		}
 		temp = temp->next;
+	}
+}
+
+void	open_heredocs(t_pipex vars)
+{
+	t_command	*tmp;
+	t_token		*temp;
+
+	tmp = *(vars.copy_cmds);
+	while (tmp != NULL)
+	{
+		temp = tmp->redirections;
+		while (temp != NULL)
+		{
+			if (temp->type == T_LIMITOR)
+			{
+				temp->fd = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
+						S_IRUSR | S_IWUSR);
+				fill_heredoc(temp, tmp, vars);
+				if (g_sig == 1)
+					return ;
+			}
+			temp = temp->next;
+		}
+		tmp = tmp->next;
 	}
 }
 
@@ -60,6 +85,7 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 			close_heredoc_(fd_tmp, tmpc, old_stdin);
 			return ;
 		}
+		// EXPAND;
 		str = ft_strfjoin(str, "\n");
 		ft_putstr_fd(str, fd_tmp);
 		free(str);
@@ -70,9 +96,10 @@ void	close_heredoc_sigint(int fd_tmp, int old_stdin, t_command *tmpc)
 {
 	close(fd_tmp);
 	unlink("/tmp/here_doc");
-	close_rdirs(&(tmpc->redirections), tmpc);
+	//close_rdirs(&(tmpc->redirections), tmpc);
 	dup2(old_stdin, STDIN_FILENO);
 	close(old_stdin);
+	(void)tmpc;
 }
 
 void	close_heredoc_(int fd_tmp, t_command *tmpc, int old_stdin)

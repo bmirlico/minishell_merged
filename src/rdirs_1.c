@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:42:19 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 13:07:11 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 19:03:44 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void	open_rdirs(t_token **redirections, t_command *tmpc, t_pipex vars)
 
 void	handle_open_rdirs(t_token *tmp, t_command *tmpc, t_pipex vars)
 {
+	(void)tmpc;
+	(void)vars;
 	if (tmp->type == T_INFILE)
 		tmp->fd = open(tmp->str, O_RDONLY, S_IRUSR);
 	else if (tmp->type == T_OUTFILE)
@@ -43,12 +45,12 @@ void	handle_open_rdirs(t_token *tmp, t_command *tmpc, t_pipex vars)
 	else if (tmp->type == T_OUTFILE_APPEND)
 		tmp->fd = open(tmp->str, O_RDWR | O_CREAT | O_APPEND,
 				S_IRUSR | S_IWUSR);
-	else if (tmp->type == T_LIMITOR)
-	{
-		tmp->fd = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
-				S_IRUSR | S_IWUSR);
-		fill_heredoc(tmp, tmpc, vars);
-	}
+	// else if (tmp->type == T_LIMITOR)
+	// {
+	// 	tmp->fd = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
+	// 			S_IRUSR | S_IWUSR);
+	// 	fill_heredoc(tmp, tmpc, vars);
+	// }
 }
 
 // fonction appelée ds le child process qui permet de gére les erreurs de rdir
@@ -61,11 +63,11 @@ void	handle_errors_rdirs(t_command *tmpc, t_pipex vars, t_token **rdirs)
 	while (tmp != NULL)
 	{
 		if ((tmp->type == T_INFILE || tmp->type == T_LIMITOR)
-			&& ((tmp->fd < 0 && access(tmp->str, F_OK) == -1)
-				|| (tmp->fd < 0)))
+			&& ((tmp->fd != -3) && ((tmp->fd < 0 && access(tmp->str, F_OK) == -1)
+					|| (tmp->fd < 0))))
 			check_error_rdirs(tmpc, vars, tmp, rdirs);
 		else if ((tmp->type == T_OUTFILE || tmp->type == T_OUTFILE_APPEND)
-			&& tmp->fd < 0)
+			&& tmp->fd != -3 && tmp->fd < 0)
 			check_error_rdirs(tmpc, vars, tmp, rdirs);
 		tmp = tmp->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:48:30 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/26 15:48:08 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/15 18:43:41 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 void	init_struct(t_pipex *vars)
 {
 	get_index_cmds(vars->copy_cmds);
+	init_fds(vars->copy_cmds);
 	vars->path = get_path(vars->copy_env_tmp);
 	if (vars->path != NULL)
 		vars->paths = ft_split(vars->path, ':');
