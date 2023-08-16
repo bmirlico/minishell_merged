@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 19:27:11 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 19:17:49 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/16 20:04:41 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,26 @@ void	close_rdirs(t_token **redirections, t_command *tmp)
 	}
 }
 
+// fonction qui ferme les redirections
+void	close_rdirs_heredocs(t_pipex vars)
+{
+	t_command	*tmp;
+	t_token		*temp;
+
+	tmp = *(vars.copy_cmds);
+	while (tmp != NULL)
+	{
+		temp = tmp->redirections;
+		close_rdirs(&temp, tmp);
+		tmp = tmp->next;
+	}
+}
+
 void	open_heredocs(t_pipex vars)
 {
 	t_command	*tmp;
 	t_token		*temp;
+	int			quotes;
 
 	tmp = *(vars.copy_cmds);
 	while (tmp != NULL)
@@ -49,7 +65,10 @@ void	open_heredocs(t_pipex vars)
 			{
 				temp->fd = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
 						S_IRUSR | S_IWUSR);
-				fill_heredoc(temp, tmp, vars);
+				quotes = nb_quotes(temp->str);
+				if (quotes != 0)
+					quote_removing_rdir(temp, quotes);
+				fill_heredoc(temp, tmp, vars, quotes);
 				if (g_sig == 1)
 					return ;
 			}
@@ -59,8 +78,34 @@ void	open_heredocs(t_pipex vars)
 	}
 }
 
+void	expand_heredoc(char **str, t_pipex vars)
+{
+	int		new_len;
+	char	*new;
+	int		var_env_len;
+
+	new_len = 0;
+	new = NULL;
+	var_env_len = 0;
+	if (to_be_modified(*str) == 0)
+	{
+		var_env_len = get_varenv_value_len(vars.copy_t_env, *str);
+		new_len = ft_strlen(*str) - get_varname_len(*str) + var_env_len;
+		new = ft_calloc(sizeof(char), (new_len + 1));
+		if (new == NULL)
+			return ;
+		new[new_len] = '\0';
+		new_str(vars.copy_t_env, *str, new);
+		//printf("%s\n", new);
+		if (*str)
+			free(*str);
+		*str = new;
+		//printf("%s\n", *str);
+	}
+}
+
 // fonction qui remplit le fichier tmp/here_doc avec le contenu du heredoc
-void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
+void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars, int quotes)
 {
 	char	*str;
 	int		fd_tmp;
@@ -71,7 +116,9 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 	while (1)
 	{
 		str = readline("> ");
-		if (g_sig == 1 || g_sig == 130)
+		if (quotes == 0)
+			expand_heredoc(&str, vars);
+		if (g_sig == 1)
 		{
 			close_heredoc_sigint(fd_tmp, old_stdin, tmpc);
 			new_return_value(vars.copy_t_env, "130");
@@ -81,11 +128,10 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars)
 			handle_ctrld(fd_tmp, vars, tmpc, old_stdin);
 		else if (!ft_strncmp(str, tmp->str, ft_strlen(tmp->str) + 1))
 		{
-			///write(2, "OK\n", 3);
 			close_heredoc_(fd_tmp, tmpc, old_stdin);
 			return ;
 		}
-		// EXPAND;
+		//printf("%s\n", str);
 		str = ft_strfjoin(str, "\n");
 		ft_putstr_fd(str, fd_tmp);
 		free(str);

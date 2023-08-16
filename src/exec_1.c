@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 18:37:31 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:20:50 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,13 @@ void	execution(t_pipex vars)
 		cmd = NULL;
 	init_struct(&vars);
 	open_heredocs(vars);
+	if (g_sig == 1)
+	{
+		//new_return_value(vars.copy_t_env, "130");
+		close_rdirs_heredocs(vars);
+		free_vars(vars);
+		return ;
+	}
 	while (tmp != NULL)
 	{
 		if (!is_bad_subst_cmd(tmp) && g_sig != 1)
@@ -56,6 +63,7 @@ void	pipex(t_command *tmp, t_pipex vars, t_token **rdirs)
 	{
 		close_previous_pipe(vars, tmp->index);
 		close_rdirs(&(tmp->redirections), tmp);
+		//printf("PARENT close fds\n");
 	}
 }
 
@@ -73,6 +81,7 @@ void	child_process(t_command *tmp, t_pipex vars, t_token **rdirs)
 		if (tmp->index < vars.nb_pipes)
 			close_pipe(vars, tmp->index);
 		close_rdirs(rdirs, tmp);
+		//printf("CHILD close fds\n");
 		free_and_exit(vars);
 		exit(EXIT_SUCCESS);
 	}
@@ -90,19 +99,19 @@ void	wait_exit_code(t_pipex vars)
 	int			status;
 	int			exit_code;
 	char		*str_exit;
+	int			i;
 
+	i = 0;
 	tmp = *(vars.copy_cmds);
 	while (tmp != NULL)
 	{
 		waitpid(vars.tab_pid[tmp->index], &status, 0);
-		//printf("WIFSIGNALED: %d\n", WIFSIGNALED(status));
 		if (WIFEXITED(status) && tmp->index == vars.nb_cmds - 1)
 		{
-			//printf("EXIT");
 			exit_code = WEXITSTATUS(status);
 			str_exit = ft_itoa(exit_code);
-			if (tmp->cmd_args != NULL) // A CHECKER
-				new_return_value(vars.copy_t_env, str_exit);
+			//if (tmp->cmd_args != NULL) // A CHECKER
+			new_return_value(vars.copy_t_env, str_exit);
 			free(str_exit);
 			//printf("Exit status: %d\n", exit_code);
 			// if (g_sig == 1 || g_sig == 130)
@@ -111,10 +120,7 @@ void	wait_exit_code(t_pipex vars)
 			// 	g_sig = 0;
 		}
 		else if (WIFSIGNALED(status))
-		{
-			//printf("SIGNAL");
-			handle_signals_in_parent(status, vars, tmp);
-		}
+			handle_signals_in_parent(status, vars, tmp, &i);
 		tmp = tmp->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:42:19 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 19:03:44 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/16 18:55:28 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,13 @@ void	open_rdirs(t_token **redirections, t_command *tmpc, t_pipex vars)
 
 void	handle_open_rdirs(t_token *tmp, t_command *tmpc, t_pipex vars)
 {
+	int	quotes;
+
 	(void)tmpc;
 	(void)vars;
+	quotes = nb_quotes(tmp->str);
+	if (quotes != 0)
+		quote_removing_rdir(tmp, quotes);
 	if (tmp->type == T_INFILE)
 		tmp->fd = open(tmp->str, O_RDONLY, S_IRUSR);
 	else if (tmp->type == T_OUTFILE)

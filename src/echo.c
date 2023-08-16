@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 18:47:05 by clbernar          #+#    #+#             */
-/*   Updated: 2023/08/07 15:45:36 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:31:07 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,12 @@ void	echo(t_command *cmd, t_env *env)
 			if (!is_option_n(cmd->cmd_args[i]))
 				option++;
 			if (option != 0 && ft_strlen(cmd->cmd_args[i]) != 0)
-				ft_printf("%s ", cmd->cmd_args[i]);
+			{
+				if (i != get_len_tab(cmd->cmd_args) - 1)
+					ft_printf("%s ", cmd->cmd_args[i]);
+				else
+					ft_printf("%s", cmd->cmd_args[i]);
+			}
 		}
 		i++;
 	}

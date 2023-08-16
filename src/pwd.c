@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 12:45:26 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/07/24 16:18:47 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/16 18:12:52 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	built_in_pwd(t_pipex vars)
 	else
 		perror("pwd");
 	str = ft_strjoin("PWD=", cwd);
-	export(vars.copy_t_env, str);
+	export(vars.copy_t_env, str); // modifier export PWD uniquement si elle existe
 	free(str);
 	free(cwd);
 	new_return_value(vars.copy_t_env, "0");

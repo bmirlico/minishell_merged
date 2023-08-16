@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 18:53:48 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/16 20:03:18 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,10 +399,14 @@ void			close_pipe_and_free(t_pipex vars, int index);
 
 void			close_rdirs(t_token **redirections, t_command *tmp);
 
+void			close_rdirs_heredocs(t_pipex vars);
+
 void			open_heredocs(t_pipex vars);
 
+void			expand_heredoc(char **str, t_pipex vars);
+
 void			fill_heredoc(t_token *tmp, t_command *tmpc,
-					t_pipex vars);
+					t_pipex vars, int quotes);
 
 void			close_heredoc_sigint(int fd_tmp, int old_stdin,
 					t_command *tmpc);
@@ -582,7 +586,7 @@ void			signal_ctrlc_cmd(int sig);
 void			signal_sigquit(void);
 
 void			handle_signals_in_parent(int status,
-					t_pipex vars, t_command	*tmp);
+					t_pipex vars, t_command	*tmp, int *i);
 
 // reset_signal.c @Bastien @Clement
 

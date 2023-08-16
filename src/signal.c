@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:07:56 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 15:37:42 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:12:27 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,6 @@ void	signal_sigint_heredoc(void)
 void	signal_ctrlc_heredoc(int sig)
 {
 	(void)sig;
-	// rl_on_new_line();
-	// rl_replace_line("", 0);
 	close(STDIN_FILENO);
 	write(STDOUT_FILENO, "> ^C\n", 5);
 	g_sig = 1;
@@ -97,7 +95,7 @@ void	signal_sigquit(void)
 }
 
 void	handle_signals_in_parent(int status, t_pipex vars,
-			t_command	*tmp)
+			t_command	*tmp, int *i)
 {
 	int	term_signal;
 
@@ -110,10 +108,13 @@ void	handle_signals_in_parent(int status, t_pipex vars,
 	}
 	else if (term_signal == SIGINT)
 	{
-		ft_printf("\n");
+		if (*i == 0)
+			ft_printf("\n");
 		if (tmp->next == NULL)
+		{
 			new_return_value(vars.copy_t_env, "130");
-		g_sig = 130;
+			g_sig = 130;
+		}
+		*i += 1;
 	}
-	//printf("GSIG parent: %d\n", g_sig);
 }
