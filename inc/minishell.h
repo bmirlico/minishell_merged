@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/16 20:03:18 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/18 18:28:02 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,17 +381,22 @@ t_token			*get_last_outfile(t_token **rdirs);
 
 // rdirs_1.c @Bastien
 
-void			open_rdirs(t_token **redirections, t_command *tmpc,
+int				open_rdirs(t_token **redirections, t_command *tmpc,
 					t_pipex vars);
 
-void			handle_open_rdirs(t_token *tmp, t_command *tmpc,
+int				handle_open_rdirs(t_token *tmp, t_command *tmpc,
 					t_pipex vars);
+
+int				check_spaces(char *str);
 
 void			handle_errors_rdirs(t_command *tmpc, t_pipex vars,
 					t_token **rdirs);
 
 void			check_error_rdirs(t_command *tmpc, t_pipex vars, t_token *tmp,
 					t_token **rdirs);
+
+void			check_error_rdirs_builtin(t_command *tmpc, t_pipex vars,
+					t_token *tmp, t_token **rdirs);
 
 void			close_pipe_and_free(t_pipex vars, int index);
 

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 12:46:59 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 15:45:02 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/18 18:28:16 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,22 @@ void	exec_builtin(t_command *tmp, t_pipex vars)
 
 	ret = 0;
 	len = ft_strlen(tmp->cmd_args[0]);
-	if (vars.nb_pipes == 0)
+	if (vars.nb_pipes == 0 && tmp->redirections != NULL)
 		ret = builtin_redirection(&old_stdout, tmp, vars);
 	if (ret == 0)
 		builtins(len, tmp, vars);
 	if (vars.nb_pipes == 0 && tmp->redirections != NULL)
 	{
-		if (dup2(old_stdout, STDOUT_FILENO) < 0)
-			exit(EXIT_FAILURE);
+		if (ret == 0)
+		{
+			if (dup2(old_stdout, STDOUT_FILENO) < 0)
+				exit(EXIT_FAILURE);
+		}
 		if (close(old_stdout) < 0)
+		{
 			exit(EXIT_FAILURE);
+			printf("CHELOU\n");
+		}
 	}
 }
 
@@ -72,7 +78,7 @@ int	builtin_redirection(int *old_stdout, t_command *tmp, t_pipex vars)
 		if (dup2(last_outfile->fd, STDOUT_FILENO) < 0)
 			exit(EXIT_FAILURE);
 	}
-	close_rdirs(&(tmp->redirections), tmp);
+	close_rdirs(&(tmp->redirections), tmp); // CHECK
 	return (ret);
 }
 
@@ -85,17 +91,17 @@ int	errors_rdirs_builtin_alone(t_command *tmp, t_pipex vars)
 	while (temp != NULL)
 	{
 		if ((temp->type == T_INFILE || temp->type == T_LIMITOR)
-			&& ((temp->fd < 0 && access(temp->str, F_OK) == -1)
-				|| (temp->fd < 0)))
+			&& ((temp->fd != -3) && ((temp->fd < 0 && access(temp->str, F_OK) == -1)
+					|| (temp->fd < 0))))
 		{
-			perror(temp->str);
+			check_error_rdirs_builtin(tmp, vars, temp, &(tmp->redirections));
 			new_return_value(vars.copy_t_env, "1");
 			return (1);
 		}
 		else if ((temp->type == T_OUTFILE || temp->type == T_OUTFILE_APPEND)
-			&& temp->fd < 0)
+			&& temp->fd != -3 && temp->fd < 0)
 		{
-			perror(temp->str);
+			check_error_rdirs_builtin(tmp, vars, temp, &(tmp->redirections));
 			new_return_value(vars.copy_t_env, "1");
 			return (1);
 		}

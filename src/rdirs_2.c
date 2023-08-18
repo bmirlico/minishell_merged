@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 19:27:11 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/16 20:04:41 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/18 14:51:20 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,6 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars, int quotes)
 			close_heredoc_(fd_tmp, tmpc, old_stdin);
 			return ;
 		}
-		//printf("%s\n", str);
 		str = ft_strfjoin(str, "\n");
 		ft_putstr_fd(str, fd_tmp);
 		free(str);

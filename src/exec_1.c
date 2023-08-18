@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/16 16:20:50 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/18 18:50:59 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ void	execution(t_pipex vars)
 {
 	t_command	*tmp;
 	char		*cmd;
+	int			ret;
 
 	tmp = *(vars.copy_cmds);
+	ret = 0;
 	if (tmp->cmd_args != NULL)
 		cmd = (*(vars.copy_cmds))->cmd_args[0];
 	else
@@ -28,7 +30,6 @@ void	execution(t_pipex vars)
 	open_heredocs(vars);
 	if (g_sig == 1)
 	{
-		//new_return_value(vars.copy_t_env, "130");
 		close_rdirs_heredocs(vars);
 		free_vars(vars);
 		return ;
@@ -36,7 +37,9 @@ void	execution(t_pipex vars)
 	while (tmp != NULL)
 	{
 		if (!is_bad_subst_cmd(tmp) && g_sig != 1)
-			open_rdirs(&(tmp->redirections), tmp, vars);
+			ret = open_rdirs(&(tmp->redirections), tmp, vars);
+		if (ret == 1)
+			return ;
 		if (tmp->cmd_args != NULL && vars.nb_pipes == 0
 			&& is_builtin(tmp->cmd_args[0]))
 			exec_builtin(tmp, vars);
@@ -63,7 +66,6 @@ void	pipex(t_command *tmp, t_pipex vars, t_token **rdirs)
 	{
 		close_previous_pipe(vars, tmp->index);
 		close_rdirs(&(tmp->redirections), tmp);
-		//printf("PARENT close fds\n");
 	}
 }
 
@@ -81,7 +83,6 @@ void	child_process(t_command *tmp, t_pipex vars, t_token **rdirs)
 		if (tmp->index < vars.nb_pipes)
 			close_pipe(vars, tmp->index);
 		close_rdirs(rdirs, tmp);
-		//printf("CHILD close fds\n");
 		free_and_exit(vars);
 		exit(EXIT_SUCCESS);
 	}
