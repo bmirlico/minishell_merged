@@ -6,11 +6,56 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 14:49:29 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 16:12:50 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 15:54:07 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
+
+// fonction qui wait les child process et recupere l'exit code de la
+// derniere commande, et l'affecte a l'env ($?)
+void	wait_exit_code(t_pipex vars)
+{
+	t_command	*tmp;
+	int			status;
+	int			exit_code;
+	char		*str_exit;
+	int			i;
+
+	i = 0;
+	tmp = *(vars.copy_cmds);
+	while (tmp != NULL)
+	{
+		waitpid(vars.tab_pid[tmp->index], &status, 0);
+		if (WIFEXITED(status) && tmp->index == vars.nb_cmds - 1)
+		{
+			exit_code = WEXITSTATUS(status);
+			str_exit = ft_itoa(exit_code);
+			new_return_value(vars.copy_t_env, str_exit);
+			free(str_exit);
+		}
+		else if (WIFSIGNALED(status))
+			handle_signals_in_parent(status, vars, tmp, &i);
+		tmp = tmp->next;
+	}
+}
+
+// fonction qui recupere le path de l'env et le split
+// pour préparer l'execution de la commande
+void	exec_cmd(t_command *tmp, t_pipex vars)
+{
+	char	*cmd_with_path;
+
+	if (count_slash(tmp->cmd_args[0]) > 0 || vars.path == NULL)
+		cmd_with_path = ft_strdup(tmp->cmd_args[0]);
+	else
+	{
+		cmd_with_path = get_cmd_with_path(tmp->cmd_args[0], vars.paths);
+		if (cmd_with_path == NULL)
+			cmd_with_path = ft_strdup("");
+	}
+	handle_exec(cmd_with_path, tmp, vars);
+}
 
 // fonction qui gere l'execution de la commande et les differents
 // cas d'erreurs possibles avec les exit status associes
@@ -80,45 +125,4 @@ void	if_file_exists(char *cmd_p, t_command *tmp, t_pipex vars)
 		free_and_exit(vars);
 		exit(EXIT_FAILURE);
 	}
-}
-
-void	check_bad_subst_cmd(t_command *tmp, t_pipex vars, t_token **rdirs)
-{
-	int		i;
-	char	*str;
-
-	i = 0;
-	str = NULL;
-	if (tmp->cmd_args == NULL)
-		return ;
-	while (tmp->cmd_args[i] != NULL)
-	{
-		if (check_bad_env_variable(tmp->cmd_args[i]) == 2)
-		{
-			str = ft_strjoin(tmp->cmd_args[i], ": bad substitution\n");
-			ft_putstr_fd(str, 2);
-			free(str);
-			close_rdirs(rdirs, tmp);
-			if (vars.nb_pipes > 0)
-				close_previous_pipe(vars, tmp->index);
-			close_pipe_and_free(vars, tmp->index);
-		}
-		i++;
-	}
-}
-
-int	is_bad_subst_cmd(t_command *tmp)
-{
-	int	i;
-
-	i = 0;
-	if (tmp->cmd_args == NULL)
-		return (0);
-	while (tmp->cmd_args[i] != NULL)
-	{
-		if (check_bad_env_variable(tmp->cmd_args[i]) == 2)
-			return (1);
-		i++;
-	}
-	return (0);
 }

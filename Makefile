@@ -6,7 +6,7 @@
 #    By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/27 18:44:26 by bmirlico          #+#    #+#              #
-#    Updated: 2023/08/07 21:20:12 by bmirlico         ###   ########.fr        #
+#    Updated: 2023/08/21 16:40:42 by bmirlico         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,17 +42,22 @@ SRCS = 			$(SRC_DIR)/main.c \
 				$(SRC_DIR)/expand_substitution.c \
 				$(SRC_DIR)/get_expand_info.c \
 				$(SRC_DIR)/expand.c \
+				$(SRC_DIR)/split_expand_1.c \
+				$(SRC_DIR)/split_expand_2.c \
 				$(SRC_DIR)/clean_post_expand.c \
 				$(SRC_DIR)/remove_quote.c \
 				$(SRC_DIR)/dup_env.c\
 				$(SRC_DIR)/lst_env_utils.c\
 				$(SRC_DIR)/exec_1.c \
 				$(SRC_DIR)/exec_2.c \
+				$(SRC_DIR)/exec_3.c \
 				$(SRC_DIR)/pipe.c \
 				$(SRC_DIR)/pipe_rdir_1.c \
 				$(SRC_DIR)/pipe_rdir_2.c \
 				$(SRC_DIR)/rdirs_1.c \
+				$(SRC_DIR)/rdirs_1bis.c \
 				$(SRC_DIR)/rdirs_2.c \
+				$(SRC_DIR)/rdirs_3.c \
 				$(SRC_DIR)/utils_exec_1.c \
 				$(SRC_DIR)/utils_exec_2.c \
 				$(SRC_DIR)/utils_exec_3.c \
@@ -68,8 +73,10 @@ SRCS = 			$(SRC_DIR)/main.c \
 				$(SRC_DIR)/export_display.c \
 				$(SRC_DIR)/echo.c \
 				$(SRC_DIR)/echo_special_case.c \
-				$(SRC_DIR)/signal.c \
-				$(SRC_DIR)/reset_signal.c
+				$(SRC_DIR)/signals_1.c \
+				$(SRC_DIR)/signals_2.c \
+				$(SRC_DIR)/reset_signal_1.c \
+				$(SRC_DIR)/reset_signal_2.c \
 
 LIBFTDIR = 		./libft
 

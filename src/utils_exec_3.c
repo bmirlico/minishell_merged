@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 18:02:58 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 18:51:53 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 14:23:17 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,13 @@ void	init_vars_heredoc(int *fd_tmp, int *old_stdin)
 	*old_stdin = dup(0);
 }
 
+// fonction qui regroupe les vars du heredoc, et la gestion des signaux
+// pour la norme
+void	set_heredoc(int *fd_tmp, int *old_stdin)
+{
+	init_vars_heredoc(fd_tmp, old_stdin);
+	signal_sigint_heredoc();
+}
 
 // FONCTION QUI PERMET D'INITIALISER LES FDS avant meme d'ouvrir les rdirs
 // et empeche d'avoir un conditional move (ex d'erreur qu'on avait avec

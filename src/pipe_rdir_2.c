@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 15:21:38 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/18 19:17:14 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 17:48:35 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,14 @@
 // intermédiaires d'un pipe (entre la 1ere et la derniere)
 void	pipe_between_outfile(t_token *last_outfile, t_pipex vars, int i)
 {
+	int	len;
+
 	if (last_outfile != NULL)
+		len = ft_strlen(last_outfile->str);
+	else
+		len = 0;
+	if (last_outfile != NULL
+		&& ft_strncmp(last_outfile->str, "/dev/stdout", len + 1))
 	{
 		if (dup2(last_outfile->fd, STDOUT_FILENO) < 0)
 			exit(EXIT_FAILURE);

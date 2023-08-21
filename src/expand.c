@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 20:01:19 by clbernar          #+#    #+#             */
-/*   Updated: 2023/08/07 20:36:54 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:21:36 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ void	expand_tab(t_env *env, char **tab)
 
 	i = 0;
 	if (tab == NULL)
-		return ;
-	if (ft_strncmp(tab[0], "echo", ft_strlen(tab[0])) == 0)
 		return ;
 	while (tab[i])
 	{
@@ -109,6 +107,7 @@ void	expand(t_env *env, t_command **cmds)
 		tmp = tmp->next;
 	}
 	tmp = *cmds;
+	split_after_expand(cmds);
 	clean_lst(*cmds);
 	while (tmp != NULL)
 	{

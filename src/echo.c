@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 18:47:05 by clbernar          #+#    #+#             */
-/*   Updated: 2023/08/16 16:31:07 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:12:45 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +67,19 @@ void	echo(t_command *cmd, t_env *env)
 			if (!is_option_n(cmd->cmd_args[i]))
 				option++;
 			if (option != 0 && ft_strlen(cmd->cmd_args[i]) != 0)
-			{
-				if (i != get_len_tab(cmd->cmd_args) - 1)
-					ft_printf("%s ", cmd->cmd_args[i]);
-				else
-					ft_printf("%s", cmd->cmd_args[i]);
-			}
+				display_option(i, cmd->cmd_args, cmd->cmd_args[i]);
 		}
 		i++;
 	}
+}
+
+// fonction pour mettre la fonction echo a la norme
+void	display_option(int i, char **tab, char *str)
+{
+	if (i != get_len_tab(tab) - 1)
+		ft_printf("%s ", str);
+	else
+		ft_printf("%s", str);
 }
 
 // This function checks if the arg is a n option (-n or -nnnnnnnn is similar)

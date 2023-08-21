@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reset_signal.c                                     :+:      :+:    :+:   */
+/*   reset_signal_1.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 14:37:00 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/14 19:18:08 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 15:30:04 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,19 +54,4 @@ void	reset_sigint(void)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
-}
-
-// fonction qui reset SIGQUIT
-void	reset_sigquit(t_pipex vars)
-{
-	struct sigaction	sa;
-	struct termios		new_attributes;
-
-	sa.sa_handler = SIG_DFL;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGQUIT, &sa, NULL);
-	new_attributes = vars.original_attributes;
-	new_attributes.c_lflag |= ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSANOW, &new_attributes);
 }

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 12:46:59 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/18 18:28:16 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 15:34:49 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	builtin_redirection(int *old_stdout, t_command *tmp, t_pipex vars)
 		if (dup2(last_outfile->fd, STDOUT_FILENO) < 0)
 			exit(EXIT_FAILURE);
 	}
-	close_rdirs(&(tmp->redirections), tmp); // CHECK
+	close_rdirs(&(tmp->redirections), tmp);
 	return (ret);
 }
 
@@ -91,7 +91,8 @@ int	errors_rdirs_builtin_alone(t_command *tmp, t_pipex vars)
 	while (temp != NULL)
 	{
 		if ((temp->type == T_INFILE || temp->type == T_LIMITOR)
-			&& ((temp->fd != -3) && ((temp->fd < 0 && access(temp->str, F_OK) == -1)
+			&& ((temp->fd != -3) && ((temp->fd < 0
+						&& access(temp->str, F_OK) == -1)
 					|| (temp->fd < 0))))
 		{
 			check_error_rdirs_builtin(tmp, vars, temp, &(tmp->redirections));

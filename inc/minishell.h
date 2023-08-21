@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/18 18:28:02 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 18:33:18 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ typedef struct s_pipex {
 /* 0) MAIN */
 
 // main.c @Bastien
+
+void			reset_global_var(int *g_sig, t_env *env);
 
 void			minishell(t_env *env, char *input);
 
@@ -279,6 +281,25 @@ void			expand_rdir(t_env *env, t_token	*redirections);
 
 void			expand_rdir_lst(t_env *env, t_token *rdir);
 
+// split_expand_1.c @Clement
+
+int				count_new_tab_size(char **tab);
+
+int				fill_new_split_tab(char **tab, char ***new, int index,
+					int size);
+
+int				fill_new_str_alone(int index, char *str, char ***new);
+
+void			replace_split_tab(t_command *tmp);
+
+void			split_after_expand(t_command **cmds);
+
+// split_expand_2.c @Clement
+
+void			init_split_tab(char ***new, char ***temp, int *i, int *k);
+
+void			free_temp_and_increment(int *i, char ***temp);
+
 // remove_quote.c @Clement
 
 void			remove_quotes_rdir(t_token	*redirections);
@@ -288,6 +309,8 @@ void			quote_removing_rdir(t_token *rdir, int quotes);
 void			remove_quotes_tab(char **tab);
 
 void			quote_removing_tab(char **tab, int index, int quotes);
+
+void			quote_removing_str(char **str, int quotes);
 
 /* 4) EXECUTION i.e execution des commandes */
 
@@ -321,21 +344,28 @@ void			new_return_value(t_env *env, char *return_value);
 
 void			execution(t_pipex vars);
 
+void			init_execution(t_command *tmp, char **cmd, int *ret,
+					t_pipex *vars);
+
+void			do_execution(t_command	*tmp, t_pipex vars);
+
 void			pipex(t_command *tmp, t_pipex vars, t_token **rdirs);
 
 void			child_process(t_command *tmp, t_pipex vars, t_token **rdirs);
 
+// exec_2.c @Bastien
+
 void			wait_exit_code(t_pipex vars);
 
 void			exec_cmd(t_command *tmp, t_pipex vars);
-
-// exec_2.c @Bastien
 
 void			handle_exec(char *cmd_p, t_command *tmp, t_pipex vars);
 
 void			if_file_unexists(char *cmd_p, t_command *tmp, t_pipex vars);
 
 void			if_file_exists(char *cmd_p, t_command *tmp, t_pipex vars);
+
+// exec_3.c @Bastien
 
 void			check_bad_subst_cmd(t_command *tmp, t_pipex vars,
 					t_token **rdirs);
@@ -395,6 +425,8 @@ void			handle_errors_rdirs(t_command *tmpc, t_pipex vars,
 void			check_error_rdirs(t_command *tmpc, t_pipex vars, t_token *tmp,
 					t_token **rdirs);
 
+// rdirs_1bis.c @Bastien
+
 void			check_error_rdirs_builtin(t_command *tmpc, t_pipex vars,
 					t_token *tmp, t_token **rdirs);
 
@@ -412,6 +444,10 @@ void			expand_heredoc(char **str, t_pipex vars);
 
 void			fill_heredoc(t_token *tmp, t_command *tmpc,
 					t_pipex vars, int quotes);
+
+// rdirs_3.c @Bastien
+
+void			put_in_heredoc(char **str, int fd_tmp);
 
 void			close_heredoc_sigint(int fd_tmp, int old_stdin,
 					t_command *tmpc);
@@ -454,6 +490,8 @@ void			free_vars(t_pipex vars);
 
 void			init_vars_heredoc(int *fd_tmp, int *old_stdin);
 
+void			set_heredoc(int *fd_tmp, int *old_stdin);
+
 void			init_fds(t_command **cmds);
 
 /* 5) BUILT-INS et des builtins */
@@ -486,6 +524,8 @@ void			cd_not_working(char *error_str, char *cwd, t_command *tmp,
 // pwd.c @Bastien
 
 void			built_in_pwd(t_pipex vars);
+
+int				check_existence_in_env(char *str, t_env *env);
 
 // exit_1.c @Bastien
 
@@ -556,6 +596,8 @@ void			built_in_echo(t_command *cmd, t_pipex vars);
 
 void			echo(t_command *cmd, t_env *env);
 
+void			display_option(int i, char **tab, char *str);
+
 int				no_expand_needed(char *str, t_env *env);
 
 int				is_option_n(char *str);
@@ -574,7 +616,7 @@ int				is_special_var_env(char *str, int i, t_env *env);
 
 /* 6) GESTION des signaux */
 
-// signal.c @Bastien @Clement
+// signals_1.c @Bastien @Clement
 
 void			signal_action(void);
 
@@ -586,14 +628,14 @@ void			signal_sigint_heredoc(void);
 
 void			signal_ctrlc_heredoc(int sig);
 
-void			signal_ctrlc_cmd(int sig);
+// signals_2.c @Bastien @Clement
 
 void			signal_sigquit(void);
 
 void			handle_signals_in_parent(int status,
 					t_pipex vars, t_command	*tmp, int *i);
 
-// reset_signal.c @Bastien @Clement
+// reset_signal_1.c @Bastien @Clement
 
 void			ignore_signal(void);
 
@@ -604,6 +646,8 @@ void			ignore_sigquit(void);
 void			reset_signal(t_pipex vars);
 
 void			reset_sigint(void);
+
+// reset_signal_2.c @Bastien @Clement
 
 void			reset_sigquit(t_pipex vars);
 

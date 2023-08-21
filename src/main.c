@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/15 13:15:44 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 12:55:17 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,25 @@ int	main(int ac, char **av, char **envp)
 	{
 		signal_action();
 		input = readline("minishell$ ");
-		//printf("GSIG main: %d\n", g_sig);
 		if (input == NULL)
 		{
 			ft_printf("exit\n");
 			free_envlst(&env);
 			exit (0);
 		}
-		if (g_sig == 130)
-			new_return_value(env, "130");
-		g_sig = 0;
+		reset_global_var(&g_sig, env);
 		minishell(env, input);
 		free(input);
 	}
 	free_envlst(&env);
 	return (0);
+}
+
+void	reset_global_var(int *g_sig, t_env *env)
+{
+	if (*g_sig == 130)
+		new_return_value(env, "130");
+	*g_sig = 0;
 }
 
 // fonction minishell qui cree tokenise l'input et cree les listes

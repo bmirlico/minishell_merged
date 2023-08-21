@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 12:44:15 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 17:09:32 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 12:38:32 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,13 @@ void	cd_pb_arguments(int len_tab, char *cwd, t_pipex vars)
 void	cd_working(char *str, char *cwd, t_pipex vars)
 {
 	str = ft_strjoin("OLDPWD=", cwd);
-	export(vars.copy_t_env, str);
+	if (check_existence_in_env("OLDPWD", vars.copy_t_env))
+		export(vars.copy_t_env, str);
 	free(str);
 	getcwd(cwd, PATH_MAX);
 	str = ft_strjoin("PWD=", cwd);
-	export(vars.copy_t_env, str);
+	if (check_existence_in_env("PWD", vars.copy_t_env))
+		export(vars.copy_t_env, str);
 	free(cwd);
 	free(str);
 	new_return_value(vars.copy_t_env, "0");

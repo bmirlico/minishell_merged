@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:05:59 by clbernar          #+#    #+#             */
-/*   Updated: 2023/08/07 20:43:30 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 18:17:35 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	quote_removing_rdir(t_token *rdir, int quotes)
 	i = 0;
 	j = 0;
 	quote_state = CLOSED;
-	new = malloc(sizeof(char *) * (ft_strlen(rdir->str) - quotes + 1));
+	new = malloc(sizeof(char) * (ft_strlen(rdir->str) - quotes + 1));
 	if (new == NULL)
 		return ;
 	while (rdir->str[i])
@@ -113,4 +113,34 @@ void	remove_quotes_rdir(t_token	*redirections)
 			quote_removing_rdir(tmp, quotes);
 		tmp = tmp->next;
 	}
+}
+
+// This function replaces a string by a copy of it whithout the quotes
+void	quote_removing_str(char **str, int quotes)
+{
+	int		i;
+	int		j;
+	char	*new;
+	int		quote_state;
+	int		prev_state;
+
+	i = 0;
+	j = 0;
+	quote_state = CLOSED;
+	new = malloc(sizeof(char) * (ft_strlen(*str) - quotes + 1));
+	if (new == NULL)
+		return ;
+	while ((*str)[i])
+	{
+		prev_state = quote_state;
+		quote_state = quotes_state((*str)[i], quote_state);
+		if ((quote_state == CLOSED && prev_state == CLOSED)
+			|| (quote_state != CLOSED && prev_state != CLOSED))
+			new[j++] = (*str)[i];
+		i++;
+	}
+	new[j] = '\0';
+	if (*str != NULL)
+		free(*str);
+	*str = new;
 }

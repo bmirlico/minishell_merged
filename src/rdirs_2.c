@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 19:27:11 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/18 14:51:20 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 18:32:56 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ void	expand_heredoc(char **str, t_pipex vars)
 	new_len = 0;
 	new = NULL;
 	var_env_len = 0;
+	if (*str == NULL)
+		return ;
 	if (to_be_modified(*str) == 0)
 	{
 		var_env_len = get_varenv_value_len(vars.copy_t_env, *str);
@@ -96,11 +98,9 @@ void	expand_heredoc(char **str, t_pipex vars)
 			return ;
 		new[new_len] = '\0';
 		new_str(vars.copy_t_env, *str, new);
-		//printf("%s\n", new);
 		if (*str)
 			free(*str);
 		*str = new;
-		//printf("%s\n", *str);
 	}
 }
 
@@ -111,8 +111,7 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars, int quotes)
 	int		fd_tmp;
 	int		old_stdin;
 
-	init_vars_heredoc(&fd_tmp, &old_stdin);
-	signal_sigint_heredoc();
+	set_heredoc(&fd_tmp, &old_stdin);
 	while (1)
 	{
 		str = readline("> ");
@@ -131,36 +130,6 @@ void	fill_heredoc(t_token *tmp, t_command *tmpc, t_pipex vars, int quotes)
 			close_heredoc_(fd_tmp, tmpc, old_stdin);
 			return ;
 		}
-		str = ft_strfjoin(str, "\n");
-		ft_putstr_fd(str, fd_tmp);
-		free(str);
+		put_in_heredoc(&str, fd_tmp);
 	}
-}
-
-void	close_heredoc_sigint(int fd_tmp, int old_stdin, t_command *tmpc)
-{
-	close(fd_tmp);
-	unlink("/tmp/here_doc");
-	//close_rdirs(&(tmpc->redirections), tmpc);
-	dup2(old_stdin, STDIN_FILENO);
-	close(old_stdin);
-	(void)tmpc;
-}
-
-void	close_heredoc_(int fd_tmp, t_command *tmpc, int old_stdin)
-{
-	close(fd_tmp);
-	close(old_stdin);
-	unlink("/tmp/here_doc");
-	(void)tmpc;
-	//close_rdirs(&(tmpc->redirections), tmpc); // A CHECKER
-}
-
-void	handle_ctrld(int fd_tmp, t_pipex vars, t_command *tmpc,
-			int old_stdin)
-{
-	close_heredoc_(fd_tmp, tmpc, old_stdin);
-	free_and_exit(vars);
-	ft_printf("exit\n");
-	exit (0);
 }

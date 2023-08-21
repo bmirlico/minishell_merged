@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/18 18:50:59 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 15:53:26 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,7 @@ void	execution(t_pipex vars)
 	int			ret;
 
 	tmp = *(vars.copy_cmds);
-	ret = 0;
-	if (tmp->cmd_args != NULL)
-		cmd = (*(vars.copy_cmds))->cmd_args[0];
-	else
-		cmd = NULL;
-	init_struct(&vars);
+	init_execution(tmp, &cmd, &ret, &vars);
 	open_heredocs(vars);
 	if (g_sig == 1)
 	{
@@ -40,16 +35,35 @@ void	execution(t_pipex vars)
 			ret = open_rdirs(&(tmp->redirections), tmp, vars);
 		if (ret == 1)
 			return ;
-		if (tmp->cmd_args != NULL && vars.nb_pipes == 0
-			&& is_builtin(tmp->cmd_args[0]))
-			exec_builtin(tmp, vars);
-		else if (vars.nb_pipes >= 0)
-			pipex(tmp, vars, &(tmp->redirections));
+		do_execution(tmp, vars);
 		tmp = tmp->next;
 	}
 	if ((vars.nb_pipes == 0 && !is_builtin(cmd)) || vars.nb_pipes > 0)
 		wait_exit_code(vars);
 	free_vars(vars);
+}
+
+// fonction pour la norme
+void	init_execution(t_command *tmp, char **cmd, int *ret, t_pipex *vars)
+{
+	*ret = 0;
+	if (tmp->cmd_args != NULL)
+		*cmd = tmp->cmd_args[0];
+	else
+		*cmd = NULL;
+	init_struct(vars);
+}
+
+// fonction pour la norme, qui regroupe la partie d'execution
+// ds le cas d'un builtin seul ou bien d'un builtin / commmande ds un pipe
+// et commande seule
+void	do_execution(t_command	*tmp, t_pipex vars)
+{
+	if (tmp->cmd_args != NULL && vars.nb_pipes == 0
+		&& is_builtin(tmp->cmd_args[0]))
+		exec_builtin(tmp, vars);
+	else if (vars.nb_pipes >= 0)
+		pipex(tmp, vars, &(tmp->redirections));
 }
 
 // fonction qui réalise le fork et l'exécution des commandes ds un child process
@@ -90,55 +104,4 @@ void	child_process(t_command *tmp, t_pipex vars, t_token **rdirs)
 		exec_builtin(tmp, vars);
 	else
 		exec_cmd(tmp, vars);
-}
-
-// fonction qui wait les child process et recupere l'exit code de la
-// derniere commande, et l'affecte a l'env ($?)
-void	wait_exit_code(t_pipex vars)
-{
-	t_command	*tmp;
-	int			status;
-	int			exit_code;
-	char		*str_exit;
-	int			i;
-
-	i = 0;
-	tmp = *(vars.copy_cmds);
-	while (tmp != NULL)
-	{
-		waitpid(vars.tab_pid[tmp->index], &status, 0);
-		if (WIFEXITED(status) && tmp->index == vars.nb_cmds - 1)
-		{
-			exit_code = WEXITSTATUS(status);
-			str_exit = ft_itoa(exit_code);
-			//if (tmp->cmd_args != NULL) // A CHECKER
-			new_return_value(vars.copy_t_env, str_exit);
-			free(str_exit);
-			//printf("Exit status: %d\n", exit_code);
-			// if (g_sig == 1 || g_sig == 130)
-			// 	g_sig = 0;
-			// if (tmp->cmd_args != NULL && tmp->redirections == NULL) // A CHECK
-			// 	g_sig = 0;
-		}
-		else if (WIFSIGNALED(status))
-			handle_signals_in_parent(status, vars, tmp, &i);
-		tmp = tmp->next;
-	}
-}
-
-// fonction qui recupere le path de l'env et le split
-// pour préparer l'execution de la commande
-void	exec_cmd(t_command *tmp, t_pipex vars)
-{
-	char	*cmd_with_path;
-
-	if (count_slash(tmp->cmd_args[0]) > 0 || vars.path == NULL)
-		cmd_with_path = ft_strdup(tmp->cmd_args[0]);
-	else
-	{
-		cmd_with_path = get_cmd_with_path(tmp->cmd_args[0], vars.paths);
-		if (cmd_with_path == NULL)
-			cmd_with_path = ft_strdup("");
-	}
-	handle_exec(cmd_with_path, tmp, vars);
 }

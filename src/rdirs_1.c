@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 15:42:19 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/18 18:22:22 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:07:12 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,6 @@ int	handle_open_rdirs(t_token *tmp, t_command *tmpc, t_pipex vars)
 		tmp->fd = open(tmp->str, O_RDWR | O_CREAT | O_APPEND,
 				S_IRUSR | S_IWUSR);
 	return (0);
-	// else if (tmp->type == T_LIMITOR)
-	// {
-	// 	tmp->fd = open("/tmp/here_doc", O_RDWR | O_CREAT | O_TRUNC,
-	// 			S_IRUSR | S_IWUSR);
-	// 	fill_heredoc(tmp, tmpc, vars);
-	// }
 }
 
 int	check_spaces(char *str)
@@ -103,7 +97,8 @@ void	handle_errors_rdirs(t_command *tmpc, t_pipex vars, t_token **rdirs)
 	while (tmp != NULL)
 	{
 		if ((tmp->type == T_INFILE || tmp->type == T_LIMITOR)
-			&& ((tmp->fd != -3) && ((tmp->fd < 0 && access(tmp->str, F_OK) == -1)
+			&& ((tmp->fd != -3) && ((tmp->fd < 0
+						&& access(tmp->str, F_OK) == -1)
 					|| (tmp->fd < 0))))
 			check_error_rdirs(tmpc, vars, tmp, rdirs);
 		else if ((tmp->type == T_OUTFILE || tmp->type == T_OUTFILE_APPEND)
@@ -135,38 +130,4 @@ void	check_error_rdirs(t_command *tmpc, t_pipex vars, t_token *tmp,
 	if (vars.nb_pipes > 0)
 		close_previous_pipe(vars, tmpc->index);
 	close_pipe_and_free(vars, tmpc->index);
-}
-
-void	check_error_rdirs_builtin(t_command *tmpc, t_pipex vars, t_token *tmp,
-			t_token **rdirs)
-{
-	char	*error;
-
-	error = NULL;
-	if (check_bad_env_variable(tmp->str) == 2)
-	{
-		error = ft_strjoin(tmp->str, ": bad substitution\n");
-		ft_putstr_fd(error, 2);
-		free(error);
-	}
-	else if (tmp->str[0] == '\0')
-		ft_putstr_fd("Ambiguous redirect\n", 2);
-	else if (!ft_strncmp(tmp->str, "\"\"", 3))
-		ft_putstr_fd(" : No such file or directory\n", 2);
-	else
-		perror(tmp->str);
-	close_rdirs(rdirs, tmpc);
-	if (vars.nb_pipes > 0)
-		close_previous_pipe(vars, tmpc->index);
-}
-
-// fonction qui ferme le pipe et free le tab de pipes
-// en cas d'erreur sur les rdirs (no such file or directory
-// ou permission denied)
-void	close_pipe_and_free(t_pipex vars, int index)
-{
-	if (index < vars.nb_pipes)
-		close_pipe(vars, index);
-	free_and_exit(vars);
-	exit(EXIT_FAILURE);
 }
