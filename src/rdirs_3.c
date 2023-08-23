@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 14:38:21 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/21 18:32:40 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/23 17:06:01 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,18 @@ void	handle_ctrld(int fd_tmp, t_pipex vars, t_command *tmpc,
 	free_and_exit(vars);
 	ft_printf("exit\n");
 	exit (0);
+}
+
+int	is_varenv_in_single_quote(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$' && var_env_declaration_heredoc(str, i) == 0)
+			return (0);
+		i++;
+	}
+	return (1);
 }

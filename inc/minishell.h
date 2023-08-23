@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/21 18:33:18 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/23 18:16:27 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ typedef struct s_pipex {
 	t_token					**copy_lst_j;
 	t_command				**copy_cmds;
 	struct termios			original_attributes;
+	int						badsubst_heredoc;
 }	t_pipex;
 
 /* 0) MAIN */
@@ -281,6 +282,18 @@ void			expand_rdir(t_env *env, t_token	*redirections);
 
 void			expand_rdir_lst(t_env *env, t_token *rdir);
 
+// expand_heredoc.c @Clement
+
+int				var_env_declaration_heredoc(char *str, int i);
+
+int				get_varenv_value_len_heredoc(t_env *env, char *str);
+
+int				get_varname_len_heredoc(char *str);
+
+void			new_str_heredoc(t_env *env, char *str, char *new);
+
+void			expand_single_quote(char **str, t_pipex *vars);
+
 // split_expand_1.c @Clement
 
 int				count_new_tab_size(char **tab);
@@ -432,18 +445,22 @@ void			check_error_rdirs_builtin(t_command *tmpc, t_pipex vars,
 
 void			close_pipe_and_free(t_pipex vars, int index);
 
+void			signal_x_badsubst(t_pipex vars);
+
+void			check_and_expand_heredoc(int quotes, t_pipex *vars, char **str);
+
 // rdirs_2.c @Bastien
 
 void			close_rdirs(t_token **redirections, t_command *tmp);
 
 void			close_rdirs_heredocs(t_pipex vars);
 
-void			open_heredocs(t_pipex vars);
+void			open_heredocs(t_pipex *vars);
 
-void			expand_heredoc(char **str, t_pipex vars);
+void			expand_heredoc(char **str, t_pipex *vars);
 
 void			fill_heredoc(t_token *tmp, t_command *tmpc,
-					t_pipex vars, int quotes);
+					t_pipex *vars, int quotes);
 
 // rdirs_3.c @Bastien
 
@@ -456,6 +473,8 @@ void			close_heredoc_(int fd_tmp, t_command *tmpc, int old_stdin);
 
 void			handle_ctrld(int fd_tmp, t_pipex vars, t_command *tmpc,
 					int old_stdin);
+
+int				is_varenv_in_single_quote(char *str);
 
 // utils_exec_1.c @Bastien
 

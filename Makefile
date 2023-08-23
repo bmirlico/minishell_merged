@@ -6,7 +6,7 @@
 #    By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/27 18:44:26 by bmirlico          #+#    #+#              #
-#    Updated: 2023/08/21 16:40:42 by bmirlico         ###   ########.fr        #
+#    Updated: 2023/08/23 17:06:46 by bmirlico         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ SRCS = 			$(SRC_DIR)/main.c \
 				$(SRC_DIR)/expand_substitution.c \
 				$(SRC_DIR)/get_expand_info.c \
 				$(SRC_DIR)/expand.c \
+				$(SRC_DIR)/expand_heredoc.c \
 				$(SRC_DIR)/split_expand_1.c \
 				$(SRC_DIR)/split_expand_2.c \
 				$(SRC_DIR)/clean_post_expand.c \

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/21 15:53:26 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/23 18:48:40 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,10 @@ void	execution(t_pipex vars)
 
 	tmp = *(vars.copy_cmds);
 	init_execution(tmp, &cmd, &ret, &vars);
-	open_heredocs(vars);
+	open_heredocs(&vars);
 	if (g_sig == 1)
 	{
-		close_rdirs_heredocs(vars);
-		free_vars(vars);
+		signal_x_badsubst(vars);
 		return ;
 	}
 	while (tmp != NULL)
