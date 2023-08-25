@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/21 16:06:26 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/23 18:52:56 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/25 12:27:34 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,16 @@ void	close_pipe_and_free(t_pipex vars, int index)
 
 void	signal_x_badsubst(t_pipex vars)
 {
-	close_rdirs_heredocs(vars);
 	if (vars.badsubst_heredoc > 0 && g_sig != 1)
 	{
 		ft_printf("Bad substitution\n");
 		new_return_value(vars.copy_t_env, "1");
 	}
-	free_vars(vars);
+	if (g_sig == 1)
+	{
+		close_rdirs_heredocs(vars);
+		free_vars(vars);
+	}
 }
 
 void	check_and_expand_heredoc(int quotes, t_pipex *vars, char **str)

@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 12:33:40 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/23 18:48:40 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/25 16:29:56 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@ void	execution(t_pipex vars)
 	tmp = *(vars.copy_cmds);
 	init_execution(tmp, &cmd, &ret, &vars);
 	open_heredocs(&vars);
-	if (g_sig == 1)
+	if (g_sig == 1 || vars.badsubst_heredoc > 0)
 	{
 		signal_x_badsubst(vars);
-		return ;
+		if (g_sig == 1)
+			return ;
 	}
 	while (tmp != NULL)
 	{
@@ -95,6 +96,7 @@ void	child_process(t_command *tmp, t_pipex vars, t_token **rdirs)
 		close_previous_pipe(vars, tmp->index);
 		if (tmp->index < vars.nb_pipes)
 			close_pipe(vars, tmp->index);
+		close_rdirs_heredocs(vars);
 		close_rdirs(rdirs, tmp);
 		free_and_exit(vars);
 		exit(EXIT_SUCCESS);

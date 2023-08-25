@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:24:06 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/23 18:16:27 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/25 17:50:32 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,10 @@ typedef struct s_pipex {
 void			reset_global_var(int *g_sig, t_env *env);
 
 void			minishell(t_env *env, char *input);
+
+void			check_execution(char *input, t_pipex vars);
+
+void			ctrld(char *input, t_env **env);
 
 // utils_main.c @Bastien
 

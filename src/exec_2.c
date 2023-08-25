@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 14:49:29 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/23 16:59:46 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/25 17:05:11 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void	wait_exit_code(t_pipex vars)
 		{
 			exit_code = WEXITSTATUS(status);
 			str_exit = ft_itoa(exit_code);
-			new_return_value(vars.copy_t_env, str_exit);
+			if (vars.badsubst_heredoc == 0)
+				new_return_value(vars.copy_t_env, str_exit);
 			free(str_exit);
 		}
 		else if (WIFSIGNALED(status))
@@ -48,6 +49,8 @@ void	exec_cmd(t_command *tmp, t_pipex vars)
 
 	if (count_slash(tmp->cmd_args[0]) > 0 || vars.path == NULL)
 		cmd_with_path = ft_strdup(tmp->cmd_args[0]);
+	else if (tmp->cmd_args[0][0] == '\0')
+		cmd_with_path = ft_strdup("");
 	else
 	{
 		cmd_with_path = get_cmd_with_path(tmp->cmd_args[0], vars.paths);
@@ -88,19 +91,20 @@ void	if_file_unexists(char *cmd_p, t_command *tmp, t_pipex vars)
 
 	error = NULL;
 	if (count_slash(tmp->cmd_args[0]) > 0 || !is_path_set(vars.copy_env_tmp))
-	{
-		error = ft_strjoin(cmd_p, ": No such file or directory\n");
-		ft_putstr_fd(error, 2);
-	}
+		perror(cmd_p);
 	else
 	{
 		error = ft_strjoin(tmp->cmd_args[0], ": command not found\n");
 		ft_putstr_fd(error, 2);
 	}
-	free(error);
+	if (error != NULL)
+		free(error);
 	free(cmd_p);
 	free_and_exit(vars);
-	exit(127);
+	if (errno == 20)
+		exit(126);
+	else
+		exit(127);
 }
 
 // fonction qui gere le cas ou le fichier existe et est executable ou non

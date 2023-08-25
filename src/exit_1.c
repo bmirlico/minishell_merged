@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 14:05:01 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/07 20:58:38 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:44:12 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,14 @@ void	conditions_exit(t_command *tmp, long long exit_code, int len_tab,
 			t_pipex vars)
 {
 	char	*error_str;
+	int		dollar;
 
 	error_str = NULL;
+	dollar = ft_atoi(get_env(vars.copy_t_env, "?"));
 	if (len_tab == 1)
 	{
 		free_and_exit(vars);
-		exit(EXIT_SUCCESS);
+		exit(dollar);
 	}
 	else if (is_out_of_range(exit_code, tmp->cmd_args[1])
 		|| is_numeric(tmp->cmd_args[1]) == 0)

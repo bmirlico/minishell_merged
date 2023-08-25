@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/13 16:19:04 by clbernar          #+#    #+#             */
-/*   Updated: 2023/08/23 18:18:42 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/25 13:25:44 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,7 @@ int	check_special_char(char *input)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '\\')
-			return (0);
 		prev_state = quotes_state(input[i], prev_state);
-		if (prev_state == CLOSED && is_special_char(input[i]) == 0)
-			return (0);
 		i++;
 	}
 	if (prev_state != CLOSED)

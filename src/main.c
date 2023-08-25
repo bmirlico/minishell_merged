@@ -6,7 +6,7 @@
 /*   By: bmirlico <bmirlico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 14:25:42 by bmirlico          #+#    #+#             */
-/*   Updated: 2023/08/21 12:55:17 by bmirlico         ###   ########.fr       */
+/*   Updated: 2023/08/25 17:50:07 by bmirlico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,7 @@ int	main(int ac, char **av, char **envp)
 	{
 		signal_action();
 		input = readline("minishell$ ");
-		if (input == NULL)
-		{
-			ft_printf("exit\n");
-			free_envlst(&env);
-			exit (0);
-		}
+		ctrld(input, &env);
 		reset_global_var(&g_sig, env);
 		minishell(env, input);
 		free(input);
@@ -75,12 +70,39 @@ void	minishell(t_env *env, char *input)
 		vars.copy_t_env = env;
 		vars.copy_env_tmp = create_env_tab(env);
 		copy_lists(&vars, &lst, &lst_j, &cmds);
-		if (input != NULL)
-			execution(vars);
-		else
-			g_sig = 0;
+		check_execution(input, vars);
 		free_lists(&lst, &lst_j, &cmds);
 	}
 	else
 		new_return_value(env, "2");
+}
+
+// pour la norme ds la fonction minishell
+void	check_execution(char *input, t_pipex vars)
+{
+	if (input != NULL && ft_strlen(input) > 0)
+		execution(vars);
+	else
+	{
+		g_sig = 0;
+		free_tab(vars.copy_env_tmp);
+	}
+}
+
+// gestion du CTRL + D
+void	ctrld(char *input, t_env **env)
+{
+	int	dollar;
+
+	dollar = 0;
+	if (input == NULL)
+	{
+		ft_printf("exit\n");
+		dollar = ft_atoi(get_env(*env, "?"));
+		free_envlst(env);
+		if (g_sig == 130 || g_sig == 1)
+			exit (130);
+		else
+			exit (dollar);
+	}
 }
